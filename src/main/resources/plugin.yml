@@ -1,0 +1,35 @@
+name: VoidAirRace
+version: 0.1
+main: io.github.qingranqae.voidairrace.VoidAirRace
+description: Void Air Race Minigame
+author: qR
+api-version: '1.21.11'
+
+commands:
+  menu:
+    description: 打开菜单
+    aliases: [cd]
+    usage: /help <command>
+    permission: void-air-race.command.menu
+    permission-message: 无权执行
+  vartest:
+    description: 测试命令
+    usage: /help <command>
+    permission: void-air-race.test
+    permission-message: 无权执行
+  match:
+    description: 比赛管理命令
+    usage: /help <command>
+    permission: void-air-race.match
+    permission-message: 无权执行
+
+permissions:
+  void-air-race.test:
+    description: ""
+    default: false
+  void-air-race.command.menu:
+    description: 打开菜单权限
+    default: true
+  void-air-race.command.match:
+    description: 比赛管理命令权限
+    default: false
