@@ -1,6 +1,6 @@
 package io.github.qingranqae.voidairrace.command;
 
-import io.github.qingranqae.voidairrace.menu.MainMenu;
+import io.github.qingranqae.voidairrace.uilayer.menu.MainMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
