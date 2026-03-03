@@ -18,6 +18,10 @@ dependencies {
     implementation("net.kyori:adventure-api:4.26.1")
 }
 
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor(7, "days") // 缓存快照7天
+}
+
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
