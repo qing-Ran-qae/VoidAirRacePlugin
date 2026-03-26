@@ -1,8 +1,10 @@
 package io.github.qingranqae.voidairrace.core.playerstatemanager;
 
-import io.github.qingranqae.voidairrace.VoidAirRace;
-import io.github.qingranqae.voidairrace.util.ClassScanner;
+import io.github.qingranqae.voidairrace.infrastructure.util.ClassScanner;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -16,7 +18,7 @@ public class StateRegistry {
         return instance;
     }
 
-    public static StateRegistry getInstance(VoidAirRace mainClass) {
+    public static StateRegistry getInstance(JavaPlugin mainClass) {
         if (instance == null) instance = new StateRegistry(mainClass);
         return instance;
     }
@@ -30,9 +32,9 @@ public class StateRegistry {
 
     private final HashMap<NamespacedKey, PlayerState> idToStateInstance = new HashMap<>();
 
-    private final VoidAirRace mainClass;
+    private final JavaPlugin mainClass;
 
-    StateRegistry(VoidAirRace mainClass) {
+    StateRegistry(JavaPlugin mainClass) {
         this.mainClass = mainClass;
         scanStates();
     }
@@ -57,6 +59,11 @@ public class StateRegistry {
 
                 // 记录状态实例
                 idToStateInstance.put(stateId, stateInst);
+
+                // 如果是监听器，则注册
+                if (stateInst instanceof Listener) {
+                    Bukkit.getPluginManager().registerEvents((Listener) stateInst, mainClass);
+                }
             } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException | NullPointerException e) {
                 mainClass.getLogger().warning("记录状态类型 '" + clazz.getName() + "' 时发生了异常：" + e.getMessage());
             }
@@ -74,7 +81,7 @@ public class StateRegistry {
     /**
      * 获取 id 为 {@code id} 的玩家状态实例
      *
-     * @param id 指定状态id
+     * @param id 指定状态 id
      *
      * @return 存在对应id的状态时返回状态实例，否则返回{@code null}
      * */

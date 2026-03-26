@@ -1,0 +1,61 @@
+{
+    "type": "empty",
+    "pools": [
+        {
+            "rolls": {
+                "min": 5,
+                "max": 10
+            },
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:cooked_beef",
+                    "weight": 20
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:cooked_chicken",
+                    "weight": 10
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:bread",
+                    "weight": 10
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:cookie",
+                    "weight": 30
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "golden_apple",
+                    "weight": 5
+                }
+            ],
+            "functions": [
+                {
+                    "function": "minecraft:set_count",
+                    "count": {
+                        "min": 4,
+                        "max": 16
+                    }
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "enchanted_golden_apple",
+                    "weight": 1
+                },
+                {
+                    "type": "minecraft:empty",
+                    "weight": 10
+                }
+            ]
+        }
+    ]
+}

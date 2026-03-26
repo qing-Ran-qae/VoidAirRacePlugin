@@ -1,35 +1,42 @@
 name: VoidAirRace
-version: 0.1
-main: io.github.qingranqae.voidairrace.VoidAirRace
-description: Void Air Race Minigame
+description: Void air race Minigame
+version: '0.1'
 author: qR
+main: io.github.qingranqae.voidairrace.VoidAirRacePlugin
 api-version: '1.21.11'
 
 commands:
-  vartest:
+  vardebug:
     description: 测试命令
     usage: /help <command>
-    permission: void-air-race.test
+    permission: void_air_race.debug
     permission-message: 无权执行
   match:
     description: 比赛管理命令
     usage: /help <command>
-    permission: void-air-race.command.match
+    permission: void_air_race.command.match
     permission-message: 无权执行
-  gamemap:
+  game_map:
     description: 地图管理命令
-    aliases: [map]
     usage: /help <command>
-    permission: void-air-race.command.gamemap
+    permission: void_air_race.command.game_map
+    permission-message: 无权执行
+  player_manager:
+    description: 玩家管理命令
+    usage: /help <command>
+    permission: void_air_race.command.player_manager
     permission-message: 无权执行
 
 permissions:
-  void-air-race.test:
-    description: ""
-    default: false
-  void-air-race.command.match:
+  void_air_race.debug:
+    description: ''
+    default: op
+  void_air_race.command.match:
     description: 比赛管理命令权限
-    default: false
-  void-air-race.command.gamemap:
+    default: op
+  void_air_race.command.game_map:
     description: 地图管理命令权限
-    default: false
+    default: op
+  void_air_race.command.player_manager:
+    description: 玩家管理命令权限
+    default: op

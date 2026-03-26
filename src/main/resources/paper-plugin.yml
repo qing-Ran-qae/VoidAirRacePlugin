@@ -1,0 +1,5 @@
+name: VoidAirRace
+version: '0.1'
+main: io.github.qingranqae.voidairrace.VoidAirRacePlugin
+bootstrapper: io.github.qingranqae.voidairrace.VoidAirRaceBootstrap
+api-version: '1.21.11'

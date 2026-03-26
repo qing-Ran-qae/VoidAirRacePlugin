@@ -1,18 +1,18 @@
 package io.github.qingranqae.voidairrace.core.matchsystem;
 
-import io.github.qingranqae.voidairrace.VoidAirRace;
-import io.github.qingranqae.voidairrace.core.config.Config;
-import io.github.qingranqae.voidairrace.core.config.ConfigFiles;
-import io.github.qingranqae.voidairrace.core.config.FlagsKey;
-import io.github.qingranqae.voidairrace.core.config.ObservableYamlConfiguration;
-import io.github.qingranqae.voidairrace.event.MatchOverEvent;
-import io.github.qingranqae.voidairrace.event.MatchStartedEvent;
-import io.github.qingranqae.voidairrace.exception.InvalidMatchStateException;
-import io.github.qingranqae.voidairrace.exception.MapNotPlayableException;
+import io.github.qingranqae.voidairrace.core.result.match.CoordinatorStartMatchResult;
+import io.github.qingranqae.voidairrace.core.result.match.CoordinatorStopMatchResult;
+import io.github.qingranqae.voidairrace.service.config.Config;
+import io.github.qingranqae.voidairrace.service.config.ObservableYamlConfiguration;
+import io.github.qingranqae.voidairrace.service.config.files.FlagsKeys;
+import io.github.qingranqae.voidairrace.service.config.files.PublicFiles;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * 比赛协调器，负责管理比赛的生命周期（开始、结束、状态查询）。
- * 单例模式，通过 {@link #getInstance()} 获取实例，必须先调用 {@link #getInstance(VoidAirRace)} 进行初始化。
+ * 单例模式，通过 {@link #getInstance()} 获取实例，必须先调用 {@link #getInstance(JavaPlugin)} 进行初始化。
  */
 public class MatchCoordinator {
     private static MatchCoordinator instance;
@@ -36,7 +36,7 @@ public class MatchCoordinator {
      * @param mainClass 插件主类实例
      * @return 协调器实例
      */
-    public static MatchCoordinator getInstance(VoidAirRace mainClass) {
+    public static MatchCoordinator getInstance(JavaPlugin mainClass) {
         if (instance == null) {
             instance = new MatchCoordinator(mainClass);
         }
@@ -52,14 +52,14 @@ public class MatchCoordinator {
     private Match currentMatch = null;
 
     /** 插件主类实例，用于调度任务和事件。 */
-    private final VoidAirRace mainClass;
+    private final JavaPlugin mainClass;
 
     /**
      * 私有构造器，初始化比赛状态为 {@link MatchState#SCHEDULED}。
      *
      * @param mainClass 插件主类实例
      */
-    private MatchCoordinator(VoidAirRace mainClass) {
+    private MatchCoordinator(JavaPlugin mainClass) {
         this.matchState = MatchState.SCHEDULED;
         this.mainClass = mainClass;
     }
@@ -74,21 +74,15 @@ public class MatchCoordinator {
     }
 
     /**
-     * 开始一局新比赛。
-     *
-     * @param matchConfig 比赛的配置信息
-     * @throws InvalidMatchStateException 如果当前状态不是 {@link MatchState#SCHEDULED}（即已有比赛在进行）
-     * @throws MapNotPlayableException    如果配置中的地图不可游玩
-     * @throws NullPointerException       如果配置中的地图为 null
+     * 开始一局新比赛<br>
+     * 如果当前所选地图是 bukkit 事件监听器，那么会自动向 bukkit 注册 它
      */
-    public void startMatch(MatchConfig matchConfig) throws InvalidMatchStateException, MapNotPlayableException, NullPointerException {
-        // 检查必须条件
-        if (this.matchState != MatchState.SCHEDULED) {
-            throw new InvalidMatchStateException("比赛已在进行，无法重复开始");
-        }
-        if (matchConfig.gameMap() == null) {
-            throw new NullPointerException("比赛地图为空，无法开始比赛");
-        }
+    public CoordinatorStartMatchResult startMatch(MatchConfig matchConfig) {
+        // 检查必须条件（防止前面某阶段的检查漏条件）
+        if (this.matchState != MatchState.SCHEDULED) return CoordinatorStartMatchResult.failure(
+                Component.translatable("void_air_race.match.match_coordinator.start_match.invalid_match_state"));
+        if (!(matchConfig.gameMap().isReady())) return CoordinatorStartMatchResult.failure(
+                Component.translatable("void_air_race.match.match_coordinator.start_match.selected_not_ready"));
 
         // 更新状态
         this.matchState = MatchState.STARTING;
@@ -99,30 +93,25 @@ public class MatchCoordinator {
         // 创建比赛对象
         this.currentMatch = new Match(matchConfig, mainClass);
 
-        // 调用选中地图的 selectedStart 方法
-        this.currentMatch.getConfig().gameMap().selectedStart(this.currentMatch);
-
-        // 发布比赛开始事件
-        new MatchStartedEvent(this.currentMatch).callEvent();
-
-        // 启动规则管理器
-        currentMatch.getRuleManager().setup();
+        // 执行比赛开始逻辑
+        this.currentMatch.onStart();
 
         // 更新状态为进行中
         this.matchState = MatchState.IN_PROGRESS;
+        return CoordinatorStartMatchResult.success();
     }
 
     /**
-     * 结束当前进行的比赛。
+     * 结束当前进行的比赛<br>
+     * 如果当前比赛所选地图是 bukkit 事件监听器，那么会自动向 bukkit 注销 它
      *
      * @param mandatory 是否强制结束。如果为 false，则只有在状态为 {@link MatchState#IN_PROGRESS} 时才能结束；
      *                  如果为 true，则无论当前状态如何都会尝试结束（但会跳过某些检查）。
-     * @throws InvalidMatchStateException 当 mandatory 为 false 且当前状态不是 {@link MatchState#IN_PROGRESS} 时抛出
      */
-    public void stopMatch(boolean mandatory) throws InvalidMatchStateException {
-        if ((this.matchState != MatchState.IN_PROGRESS) && !mandatory) {
-            throw new InvalidMatchStateException("当前比赛状态不是“进行中”，无法结束比赛");
-        }
+    public CoordinatorStopMatchResult stopMatch(boolean mandatory) {
+        if ((this.matchState != MatchState.IN_PROGRESS) && !mandatory) return CoordinatorStopMatchResult.failure(
+                Component.translatable("void_air_race.match.match_coordinator.stop_match.invalid_match_state")
+                        .color(NamedTextColor.RED));
 
         // 更新状态为结束中
         this.matchState = MatchState.ENDING;
@@ -130,29 +119,24 @@ public class MatchCoordinator {
         // 设置标志，指示服务器启动时需要强制结束比赛（防止意外关闭导致状态不一致）
         setAndSaveStopFlag(true);
 
-        try {
-            // 调用选中地图的 selectedOver 方法
-            this.currentMatch.getConfig().gameMap().selectedOver(this.currentMatch);
-
-            // 关闭规则管理器
-            this.currentMatch.getRuleManager().shutdown();
-
-            // 发布比赛结束事件
-            new MatchOverEvent(this.currentMatch).callEvent();
-
-            // 销毁比赛对象
-            this.currentMatch = null;
+        try { // TODO：待修正意外重启逻辑
+            // 执行比赛结束逻辑
+            this.currentMatch.onOver();
         } catch (NullPointerException ignored) {}
+
+        this.currentMatch = null;
 
         // 更新状态为已调度（空闲）
         this.matchState = MatchState.SCHEDULED;
 
         // 重置启动时强制结束的标志
         setAndSaveStopFlag(false);
+
+        return CoordinatorStopMatchResult.success();
     }
 
     /**
-     * 获取当前正在进行的比赛对象。
+     * 获取当前进行中比赛的实例
      *
      * @return 当前比赛对象，若无比赛则返回 null
      */
@@ -166,8 +150,12 @@ public class MatchCoordinator {
      * */
     private void setAndSaveStopFlag(boolean newValue) {
         Config configInst = Config.getInstance();
-        ObservableYamlConfiguration flags = configInst.getConfig(ConfigFiles.FLAGS);
-        flags.set(FlagsKey.ON_SERVER_STARTED_STOP_MATCH, newValue);
-        configInst.saveOneConfig(ConfigFiles.FLAGS.getFileName(), flags, 3);
+        ObservableYamlConfiguration flags = configInst.getConfig(PublicFiles.FLAGS);
+        flags.set(FlagsKeys.ON_SERVER_STARTED_STOP_MATCH, newValue);
+        configInst.saveOneConfig(PublicFiles.FLAGS.getFileName(), flags, 3);
+    }
+
+    public boolean matchIsRunning() {
+        return this.matchState != MatchState.SCHEDULED;
     }
 }

@@ -6,10 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 public class TeamRoster {
     private static TeamRoster instance;
@@ -48,33 +45,22 @@ public class TeamRoster {
 
     /**
      * 添加实体到队伍
-     *
-     * @return 成功添加时返回{@code true}，如果之前就在队伍里则返回{@code false}
      */
-    public boolean join(Entity entity, Teams team) {
+    public void join(Entity entity, Teams team) {
         Team teamInst = enumToTeam(team);
-        if (onTeam(entity, team)) {
-            return false;
-        }
-        if (entity instanceof Player player) {
-            player.setScoreboard(teamScb);
-        }
+        if (onTeam(entity, team)) return;
+        if (entity instanceof Player player) player.setScoreboard(teamScb);
         teamInst.addEntity(entity);
-        return true;
     }
 
     /**
      * 使实体离开它的队伍
-     *
-     * @return 成功离队返回{@code true}，如果之前没有加入任何队伍返回 {@code false}
      */
-    public boolean leave(Entity entity) {
+    public void leave(Entity entity) {
         Team entityTeam = getEntityTeam(entity);
-        if (entityTeam == null) {
-            return false;
-        }
+        if (entityTeam == null) return;
+        if (entity instanceof Player player) player.setScoreboard(teamScb);
         entityTeam.removeEntity(entity);
-        return true;
     }
 
     /**
@@ -114,10 +100,10 @@ public class TeamRoster {
     /**
      * 获取所有队伍实例
      *
-     * @return 由队伍实例构成的集合
+     * @return 队伍实例列表的不可变视图
      * */
-    public List<Team> getAllTeams() {
-        return new ArrayList<>(enumToTeamMap.values());
+    public Collection<Team> getAllTeams() {
+        return Collections.unmodifiableCollection(enumToTeamMap.values());
     }
 
     /**

@@ -1,14 +1,14 @@
 package io.github.qingranqae.voidairrace.event;
 
-import io.github.qingranqae.voidairrace.core.config.ConfigFiles;
-import io.github.qingranqae.voidairrace.core.config.ConfigKey;
+import io.github.qingranqae.voidairrace.service.config.files.ConfigFiles;
+import io.github.qingranqae.voidairrace.service.config.files.ConfigKeys;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * 当配置文件中的某个字段值发生变更时触发的事件。
- * 该事件由 {@link io.github.qingranqae.voidairrace.core.config.ObservableYamlConfiguration} 在调用 {@code set} 方法且值发生变化时发布。
+ * 该事件由 {@link io.github.qingranqae.voidairrace.service.config.ObservableYamlConfiguration} 在调用 {@code set} 方法且值发生变化时发布。
  * 监听此事件可以实时响应配置更改，例如动态调整游戏行为。
  */
 public class ConfigFieldChangeEvent extends Event {
@@ -34,7 +34,7 @@ public class ConfigFieldChangeEvent extends Event {
     private final ConfigFiles file;
 
     /** 发生变更的配置字段。 */
-    private final ConfigKey field;
+    private final ConfigKeys field;
 
     /** 变更前的值。 */
     private final Object oldValue;
@@ -50,7 +50,7 @@ public class ConfigFieldChangeEvent extends Event {
      * @param oldValue 旧值
      * @param newValue 新值
      */
-    public ConfigFieldChangeEvent(ConfigFiles file, ConfigKey field, Object oldValue, Object newValue) {
+    public ConfigFieldChangeEvent(ConfigFiles file, ConfigKeys field, Object oldValue, Object newValue) {
         this.file = file;
         this.field = field;
         this.oldValue = oldValue;
@@ -62,7 +62,7 @@ public class ConfigFieldChangeEvent extends Event {
      *
      * @return 配置字段
      */
-    public ConfigKey getField() {
+    public ConfigKeys getField() {
         return field;
     }
 

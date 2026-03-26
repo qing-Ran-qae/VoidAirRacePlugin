@@ -1,8 +1,7 @@
 package io.github.qingranqae.voidairrace.core.mapsystem;
 
-import io.github.qingranqae.voidairrace.VoidAirRace;
-import io.github.qingranqae.voidairrace.util.ClassScanner;
-import org.jspecify.annotations.NonNull;
+import io.github.qingranqae.voidairrace.infrastructure.util.ClassScanner;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +31,7 @@ public class MapRegistry {
      *
      * @return 地图注册表实例
      * */
-    public static MapRegistry getInstance(VoidAirRace mainClass) {
+    public static MapRegistry getInstance(JavaPlugin mainClass) {
         if (instance == null) {
             instance = new MapRegistry(mainClass);
         }
@@ -45,7 +44,7 @@ public class MapRegistry {
     private final HashMap<String, Supplier<GameMap>> playableMaps = new HashMap<>();
     private final Logger logger;
 
-    private MapRegistry(VoidAirRace mainClass) {
+    private MapRegistry(JavaPlugin mainClass) {
         this.logger = mainClass.getLogger();
 
         // 自动注册地图
@@ -56,14 +55,15 @@ public class MapRegistry {
                 // 先创建一个实例获取 id
                 mapInst = mapMeta.getConstructor().newInstance();
                 // 存储一个工厂函数，该函数返回新的实例
-                maps.put(mapInst.getId(), () -> {
-                    try {
-                        return mapMeta.getConstructor().newInstance();
-                    }
-                    catch (Exception e) {
-                        throw new RuntimeException("创建地图实例失败", e);
-                    }
-                });
+                maps.put(
+                        mapInst.getId(),
+                        () -> {
+                            try {
+                                return mapMeta.getConstructor().newInstance();
+                            } catch (Exception e) {
+                                throw new RuntimeException("创建地图实例失败", e);
+                            }
+                        });
             } catch (ReflectiveOperationException e) {
                 logger.severe("注册地图 “" + mapMeta.getName() + "” 时发生异常：" + e.getMessage());
             }
@@ -98,15 +98,13 @@ public class MapRegistry {
     /**
      * 实例化一个 id 为 {@code id} 的地图
      *
-     * @return 指定地图的新实例
-     * @throws IllegalArgumentException 不存在 id 为 {@code id} 的地图时抛出
+     * @throws IllegalArgumentException 当指定地图不存在时抛出
+     *
+     * @return 指定地图的新实例，如果不存在只𨈖 id 的地图那么返回{@code null}
      * */
-    @NonNull
     public GameMap getMapById(String id) throws IllegalArgumentException {
         Supplier<GameMap> Constructor = maps.get(id);
-        if (Constructor == null) {
-            throw new IllegalArgumentException("地图 '" + id + "' 不存在，无法实例化");
-        }
+        if (Constructor == null) return null;
         return Constructor.get();
     }
 

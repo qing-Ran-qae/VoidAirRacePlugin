@@ -1,12 +1,7 @@
 package io.github.qingranqae.voidairrace.core.mapsystem.maps.lobby;
 
-import io.github.qingranqae.voidairrace.constants.PlayerPDCKey;
-import io.github.qingranqae.voidairrace.core.config.Config;
-import io.github.qingranqae.voidairrace.core.config.ConfigFiles;
-import io.github.qingranqae.voidairrace.core.config.GameSettingKey;
 import io.github.qingranqae.voidairrace.core.mapsystem.MapRegistry;
 import io.github.qingranqae.voidairrace.core.mapsystem.PlayableGameMap;
-import io.github.qingranqae.voidairrace.core.playerstatemanager.PlayerState;
 import io.github.qingranqae.voidairrace.core.playerstatemanager.PlayerStateManager;
 import io.github.qingranqae.voidairrace.core.playerstatemanager.systems.StateSystem;
 import io.github.qingranqae.voidairrace.core.playerstatemanager.systems.play.PlayState;
@@ -16,23 +11,26 @@ import io.github.qingranqae.voidairrace.event.ConfigFieldChangeEvent;
 import io.github.qingranqae.voidairrace.event.MatchOverEvent;
 import io.github.qingranqae.voidairrace.event.MatchStartedEvent;
 import io.github.qingranqae.voidairrace.event.PluginEnableEvent;
-import io.github.qingranqae.voidairrace.util.worldutil.Region;
+import io.github.qingranqae.voidairrace.infrastructure.listenerregistrar.AutoRegistration;
+import io.github.qingranqae.voidairrace.service.config.Config;
+import io.github.qingranqae.voidairrace.service.config.files.GameSettingKeys;
+import io.github.qingranqae.voidairrace.service.config.files.PublicFiles;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
-import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.BoundingBox;
 
-import java.util.HashMap;
+import java.util.Map;
 
+@AutoRegistration
 public class EventListener implements Listener {
 
     @EventHandler
@@ -52,35 +50,44 @@ public class EventListener implements Listener {
         Player player = event.getPlayer();
         TeamRoster teamRoster = TeamRoster.getInstance();
 
-        for (HashMap.Entry<Region, teamArea> i: Const.getRegionToTeam().entrySet()) {
-            Region region = i.getKey();
+        // 将玩家加入队伍区域对应的队伍
+        boolean isBreak = false;
+        for (Map.Entry<BoundingBox, teamArea> i: Const.getRegionToTeam().entrySet()) {
+            BoundingBox region = i.getKey();
             teamArea area = i.getValue();
-            if (region.contains(player.getLocation())
-                    && area.id() <= State.activeTeamAreaCount) { // 将玩家加入区域对应的队伍
+            Location location = player.getLocation();
+            if (region.contains(location.x(), location.y(), location.z())
+                    && area.id() <= State.activeTeamAreaCount) {
                 teamRoster.join(player, area.team());
+                isBreak = true;
+                break;
             }
+        }
+        if (!isBreak
+                && teamRoster.getEntityTeam(player) != null) {
+            teamRoster.leave(player);
         }
     }
 
-    @EventHandler
-    public void onPlayerOpenContainer(InventoryOpenEvent event) {
-        try {
-            World eventWorld = event.getPlayer().getWorld();
-            if (Const.getMapWorld() != null && Const.getMapWorld().equals(eventWorld)) {
-                event.setCancelled(true);
-            }
-        } catch (NullPointerException ignored) {}
-    }
+//    @EventHandler
+//    public void onPlayerOpenContainer(InventoryOpenEvent event) {
+//        try {
+//            World eventWorld = event.getPlayer().getWorld();
+//            if (Const.getMapWorld() != null && Const.getMapWorld().equals(eventWorld)) {
+//                event.setCancelled(true);
+//            }
+//        } catch (NullPointerException ignored) {}
+//    }
 
     @EventHandler
     public void onConfigChange(ConfigFieldChangeEvent  event) {
-        if (event.getField() == GameSettingKey.SELECTED_MAP_ID) {
+        if (event.getField() == GameSettingKeys.SELECTED_MAP_ID) {
             String newValue = event.getNewValue(String.class);
 
             // 更新 激活的 队伍选择区域 数量
             try {
                 if (MapRegistry.getInstance().getMapById(newValue) instanceof PlayableGameMap map) {
-                    State.activeTeamAreaCount = map.maxTeamsNumber();
+                    State.activeTeamAreaCount = map.maxTeams();
                 }
             } catch (IllegalArgumentException e) {
                 State.activeTeamAreaCount = 0;
@@ -107,9 +114,9 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPluginEnable(PluginEnableEvent event) {
-        String selectedMapId = Config.getInstance().getConfig(ConfigFiles.GAME_SETTINGS).getString(GameSettingKey.SELECTED_MAP_ID);
+        String selectedMapId = Config.getInstance().getConfig(PublicFiles.GAME_SETTINGS).getString(GameSettingKeys.SELECTED_MAP_ID);
         if (MapRegistry.getInstance().getMapById(selectedMapId) instanceof PlayableGameMap map) {
-            State.activeTeamAreaCount = map.maxTeamsNumber();
+            State.activeTeamAreaCount = map.maxTeams();
         } else {
             State.activeTeamAreaCount = 0;
         }

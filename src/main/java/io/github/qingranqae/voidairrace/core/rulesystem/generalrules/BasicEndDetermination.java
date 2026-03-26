@@ -1,5 +1,6 @@
 package io.github.qingranqae.voidairrace.core.rulesystem.generalrules;
 
+import io.github.qingranqae.voidairrace.core.matchsystem.Match;
 import io.github.qingranqae.voidairrace.core.matchsystem.MatchCoordinator;
 import io.github.qingranqae.voidairrace.core.rulesystem.MatchRule;
 import io.github.qingranqae.voidairrace.event.MatchStatusChangedEvent;
@@ -19,8 +20,14 @@ public class BasicEndDetermination implements MatchRule, Listener {
 
     @EventHandler
     public void onMatchStatusChanged(MatchStatusChangedEvent event) {
-        if (event.getMatch().getRemainingTime() <= 0) {
+        Match match = event.getMatch();
+        if (match.getRemainingTime() <= 0) {
             MatchCoordinator.getInstance().stopMatch(false);
+            return;
+        }
+        if (match.getSurvivingTeamNum() <= 1) {
+            MatchCoordinator.getInstance().stopMatch(false);
+            return;
         }
     }
 
@@ -30,12 +37,12 @@ public class BasicEndDetermination implements MatchRule, Listener {
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NonNull Component getDisplayName() {
         return Component.translatable("void_air_race.match_rule.basic_end_determination.display_name");
     }
 
     @Override
-    public Component getDescription() {
+    public @NonNull Component getDescription() {
         return Component.translatable("void_air_race.match_rule.basic_end_determination.description");
     }
 }

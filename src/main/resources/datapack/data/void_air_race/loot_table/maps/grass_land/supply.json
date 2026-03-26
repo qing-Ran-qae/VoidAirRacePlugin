@@ -1,0 +1,41 @@
+{
+    "type": "empty",
+    "pools": [
+        {
+            "rolls": 4,
+            "entries": [
+                {
+                    "type": "loot_table",
+                    "value": "void_air_race:supply/battle/level_b"
+                }
+            ]
+        },
+        {
+            "rolls": 4,
+            "entries": [
+                {
+                    "type": "loot_table",
+                    "value": "void_air_race:supply/food/level_a"
+                }
+            ]
+        },
+        {
+            "rolls": 4,
+            "entries": [
+                {
+                    "type": "loot_table",
+                    "value": "void_air_race:supply/material/level_a"
+                }
+            ]
+        },
+        {
+            "rolls": 4,
+            "entries": [
+                {
+                    "type": "loot_table",
+                    "value": "void_air_race:supply/redstone_component/level_a"
+                }
+            ]
+        }
+    ]
+}

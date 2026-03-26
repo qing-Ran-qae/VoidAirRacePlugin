@@ -3,15 +3,18 @@ package io.github.qingranqae.voidairrace.core.audiovisualservices;
 import io.github.qingranqae.voidairrace.core.matchsystem.Match;
 import io.github.qingranqae.voidairrace.event.MatchOverEvent;
 import io.github.qingranqae.voidairrace.event.MatchStartedEvent;
+import io.github.qingranqae.voidairrace.infrastructure.listenerregistrar.AutoRegistration;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+@AutoRegistration
 public class MatchMessage implements Listener {
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onMatchStarted(MatchStartedEvent event) {
         Server server = Bukkit.getServer();
         Match match = event.getMatch();
@@ -34,7 +37,7 @@ public class MatchMessage implements Listener {
         event.getMatch().getConfig().contestants().forEach(contestant -> contestant.playSound(sound));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onMatchOver(MatchOverEvent event) {
         Server server = Bukkit.getServer();
         server.broadcast(Component.translatable("void_air_race.audiovisualservices.match_message.match_over.line1"));

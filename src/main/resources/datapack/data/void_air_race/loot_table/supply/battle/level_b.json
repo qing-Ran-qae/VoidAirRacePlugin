@@ -1,0 +1,133 @@
+{
+    "type": "empty",
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:iron_sword",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:golden_axe",
+                    "weight": 2,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:stone_sword",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "iron_helmet",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "golden_helmet",
+                    "weight": 2,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "leather_helmet",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "iron_chestplate",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "golden_chestplate",
+                    "weight": 2,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "empty",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "iron_leggings",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "golden_leggings",
+                    "weight": 2,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "empty",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "iron_boots",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "golden_boots",
+                    "weight": 2,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "empty",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "golden_spear",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "stone_spear",
+                    "weight": 2,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "empty",
+                    "weight": 1
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,73 @@
+{
+    "type": "empty",
+    "pools": [
+        {
+            "rolls": {
+                "min": 4,
+                "max": 8
+            },
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "netherite_scrap",
+                    "weight": 2,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 2.5
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "item",
+                    "name": "netherite_upgrade_smithing_template",
+                    "weight": 1
+                },
+                {
+                    "type": "item",
+                    "name": "iron_block",
+                    "weight": 15
+                },
+                {
+                    "type": "item",
+                    "name": "gold_block",
+                    "weight": 15
+                },
+                {
+                    "type": "item",
+                    "name": "diamond",
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 4,
+                                "max": 5
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "loot_table",
+                    "value": "void_air_race:supply/material/level_a",
+                    "weight": 15,
+                    "functions": [
+                        {
+                            "function": "set_count",
+                            "count": {
+                                "min": 1,
+                                "max": 1.25
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "empty",
+                    "weight": 60
+                }
+            ]
+        }
+    ]
+}

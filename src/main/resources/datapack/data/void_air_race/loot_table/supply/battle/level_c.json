@@ -1,0 +1,110 @@
+{
+    "type": "empty",
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "minecraft:wooden_sword",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "minecraft:wooden_axe",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "empty",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "leather_helmet",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "chainmail_helmet",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "empty",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "leather_chestplate",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "chainmail_chestplate",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "empty",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "leather_leggings",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "chainmail_leggings",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "empty",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "item",
+                    "name": "leather_boots",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "item",
+                    "name": "chainmail_boots",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "empty",
+                    "weight": 1
+                }
+            ]
+        }
+    ]
+}

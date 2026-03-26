@@ -1,9 +1,12 @@
 package io.github.qingranqae.voidairrace.event;
 
 import io.github.qingranqae.voidairrace.core.matchsystem.Match;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jspecify.annotations.NonNull;
+
+import java.util.List;
 
 /**
  * 当一局比赛结束时触发的事件。
@@ -28,16 +31,19 @@ public class MatchOverEvent extends Event {
         return HANDLERS;
     }
 
-    /** 结束的比赛对象。 */
+    /** 刚刚结束的比赛 */
     private final Match match;
+    /** 玩家排名，索引越大的玩家排名越低/后 */
+    private final List<Player> tops;
 
     /**
      * 构造一个比赛结束事件。
      *
      * @param match 结束的比赛实例
      */
-    public MatchOverEvent(Match match) {
+    public MatchOverEvent(Match match, List<Player> tops) {
         this.match = match;
+        this.tops = tops;
     }
 
     /**
@@ -47,5 +53,12 @@ public class MatchOverEvent extends Event {
      */
     public Match getMatch() {
         return match;
+    }
+
+    /**
+     * 获取玩家排名，索引越大的玩家排名越低/后
+     * */
+    public List<Player> getTops() {
+        return tops;
     }
 }

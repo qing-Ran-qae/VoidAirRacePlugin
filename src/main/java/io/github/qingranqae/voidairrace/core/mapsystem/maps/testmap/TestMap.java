@@ -2,22 +2,24 @@ package io.github.qingranqae.voidairrace.core.mapsystem.maps.testmap;
 
 import io.github.qingranqae.voidairrace.core.mapsystem.PlayableGameMap;
 import io.github.qingranqae.voidairrace.core.matchsystem.Match;
+import io.github.qingranqae.voidairrace.core.result.map.MapSelectedStartResult;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Range;
+import org.jspecify.annotations.NonNull;
 
-public class TestMap implements PlayableGameMap {
+public class TestMap extends PlayableGameMap {
     @Override
-    public String getId() {
+    public @NonNull String getId() {
         return "TestMap";
     }
 
     @Override
-    public Component getDisplayName() {
+    public @NonNull Component getDisplayName() {
         return Component.text("TestMap");
     }
 
     @Override
-    public Component getDescription() {
+    public @NonNull Component getDescription() {
         return Component.text("TestMap");
     }
 
@@ -27,13 +29,12 @@ public class TestMap implements PlayableGameMap {
     }
 
     @Override
-    public void selectedStart(Match match) {}
+    public @NonNull MapSelectedStartResult selectedStart(Match match) {
+        return null;
+    }
 
     @Override
-    public void selectedOver(Match match) {}
-
-    @Override
-    public @Range(from = 2, to = Integer.MAX_VALUE) int maxTeamsNumber() {
+    public @Range(from = 2, to = Integer.MAX_VALUE) int maxTeams() {
         return 8;
     }
 }

@@ -1,0 +1,161 @@
+{
+    "type": "empty",
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:netherite_sword",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:diamond_sword",
+                    "weight": 2,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_sword",
+                    "weight": 4
+                },
+                {
+                    "type": "minecraft:empty",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:netherite_helmet",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:diamond_helmet",
+                    "weight": 2,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_helmet",
+                    "weight": 4
+                },
+                {
+                    "type": "minecraft:empty",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:netherite_chestplate",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:diamond_chestplate",
+                    "weight": 2,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_chestplate",
+                    "weight": 4
+                },
+                {
+                    "type": "minecraft:empty",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:netherite_leggings",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:diamond_leggings",
+                    "weight": 2,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_leggings",
+                    "weight": 4
+                },
+                {
+                    "type": "minecraft:empty",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:netherite_boots",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:diamond_boots",
+                    "weight": 2,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_boots",
+                    "weight": 4
+                },
+                {
+                    "type": "minecraft:empty",
+                    "weight": 1
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:netherite_spear",
+                    "weight": 1,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:diamond_spear",
+                    "weight": 2,
+                    "functions": [{ "function": "minecraft:enchant_randomly" }]
+                },
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:iron_spear",
+                    "weight": 4
+                },
+                {
+                    "type": "minecraft:empty",
+                    "weight": 1
+                }
+            ]
+        }
+    ]
+}

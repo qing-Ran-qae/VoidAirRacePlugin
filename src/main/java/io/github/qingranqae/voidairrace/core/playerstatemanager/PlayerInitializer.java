@@ -4,10 +4,9 @@ import io.github.qingranqae.voidairrace.constants.PlayerPDCKey;
 import io.github.qingranqae.voidairrace.event.PlayerInitEvent;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-class PlayerInitializer {
+public class PlayerInitializer {
     private static  PlayerInitializer instance;
 
     public static PlayerInitializer getInstance() {
@@ -25,24 +24,46 @@ class PlayerInitializer {
      * @param player 指定玩家
      */
     public void initializePlayer(Player player) {
-        PersistentDataContainer playerPDC = player.getPersistentDataContainer();
-        Boolean initState = playerPDC.get(PlayerPDCKey.INITIALIZED.getValue(), PersistentDataType.BOOLEAN);
-
         // 检查玩家初始化状态
-        if (initState == null || !initState) {
-            // 在所有状态体系中进入默认状态
-            for (StateSystemMeta system : StateRegistry.getInstance().getAllSystems().values()) {
-                PlayerStateManager.getInstance().toggleStatus(
-                        player,
-                        new NamespacedKey(system.id(), system.defaultState())
-                );
-            }
+        if (isInitialized(player)) return;
 
-            // 发布事件
-            new PlayerInitEvent(player).callEvent();
-
-            // 标记初始化
-            playerPDC.set(PlayerPDCKey.INITIALIZED.getValue(), PersistentDataType.BOOLEAN, true);
+        // 在所有状态体系中进入默认状态
+        PlayerStateManager playerStateManager = PlayerStateManager.getInstance();
+        for (StateSystemMeta system : StateRegistry.getInstance().getAllSystems().values()) {
+            playerStateManager.toggleStatus(
+                    player,
+                    new NamespacedKey(system.id(), system.defaultState())
+            );
         }
+
+        // 发布事件
+        new PlayerInitEvent(player).callEvent();
+
+        // 标记初始化
+        setInitState(player, true);
+    }
+
+    /**
+     * 重新初始化指定玩家
+     * */
+    public void reInitPlayer(Player player) {
+        setInitState(player, false);
+        initializePlayer(player);
+    }
+
+    public boolean isInitialized(Player player) {
+        Boolean initState = player.getPersistentDataContainer().get(
+                PlayerPDCKey.INITIALIZED.getValue(),
+                PersistentDataType.BOOLEAN
+        );
+        return initState != null && initState;
+    }
+
+    private void setInitState(Player player, Boolean newValue) {
+        player.getPersistentDataContainer().set(
+                PlayerPDCKey.INITIALIZED.getValue(),
+                PersistentDataType.BOOLEAN,
+                newValue
+        );
     }
 }
