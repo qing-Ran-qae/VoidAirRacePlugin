@@ -28,7 +28,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.loot.LootTable;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Team;
@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 
 public class GrassLand extends PlayableGameMap implements Listener {
     private ArenaToken arena;
+    private Match match;
 
     @Override
     public @NonNull String getId() {
@@ -65,6 +66,8 @@ public class GrassLand extends PlayableGameMap implements Listener {
 
     @Override
     public @NonNull MapSelectedStartResult selectedStart(Match match) {
+        this.match = match;
+
         // 加载竞技场
         BorrowArenaResult borrowResult = ArenaManager.getInstance().borrow();
         ArenaToken arena = borrowResult.getValue();
@@ -75,6 +78,7 @@ public class GrassLand extends PlayableGameMap implements Listener {
                         .arguments(borrowResult.getDisplayMessage())
         );
         this.arena = arena;
+        arena.loadArena(Const.MAP_ID);
         match.addScope(new MatchScope(arena, new HashMap<>()));
 
         playerEntryArena(match);
@@ -116,8 +120,7 @@ public class GrassLand extends PlayableGameMap implements Listener {
 
             Block block = loc.getBlock();
             if (block.getState() instanceof Chest chest) {
-                Inventory inv = chest.getInventory();
-                inv.clear(); // 清空箱子，避免残留
+                chest.getInventory().clear(); // 清空箱子，避免残留
                 chest.setLootTable(supplyLoot);
                 chest.update();
             }
@@ -228,5 +231,19 @@ public class GrassLand extends PlayableGameMap implements Listener {
             // debug
             //tempArena.returnArena();
         }, SchedulingUtil::runOnMainThread);
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        Location playerLoc = player.getLocation();
+        if (!playerLoc.getWorld().equals( // 检查玩家是否在竞技场上
+                arena.getWorld().getValue()
+        )) return;
+
+        // 到达终点后胜利
+        if (playerLoc.z() >= 499.0d) {
+            match.leaveMatch(player);
+        }
     }
 }

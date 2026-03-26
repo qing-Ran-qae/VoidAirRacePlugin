@@ -30,9 +30,9 @@ public class PlayerInitializer {
         // 在所有状态体系中进入默认状态
         PlayerStateManager playerStateManager = PlayerStateManager.getInstance();
         for (StateSystemMeta system : StateRegistry.getInstance().getAllSystems().values()) {
-            playerStateManager.toggleStatus(
+            playerStateManager.toggle(
                     player,
-                    new NamespacedKey(system.id(), system.defaultState())
+                    new NamespacedKey(system.getId(), system.getDefaultState())
             );
         }
 

@@ -15,11 +15,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class Playing implements PlayerState, Listener {
-    private static final NamespacedKey id = PlayState.PLAYING.getValue();
+    private static final NamespacedKey stateId = PlayState.PLAYING.getValue();
 
     @Override
     public NamespacedKey getId() {
-        return id;
+        return stateId;
     }
 
     @Override
@@ -30,19 +30,21 @@ public class Playing implements PlayerState, Listener {
         player.clearActiveItem();
     }
 
+    // ------ 切出到其他状态 ------
+
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
-        if (!PlayerStateManager.getInstance().onState(player, id)) return;
+        if (!PlayerStateManager.getInstance().onState(player, stateId)) return;
 
-        event.setRespawnLocation(SpawnUtil.getSpawnLocation());
+        event.setRespawnLocation(SpawnUtil.getSpawnLocation()); // 防止其他部分细微变更漏掉这步，所以这里重复设置了重生坐标（Free的切入方法中会将玩家传送到出生点）
         leaveMatch(player);
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (!PlayerStateManager.getInstance().onState(player, id)) return;
+        if (!PlayerStateManager.getInstance().onState(player, stateId)) return;
 
         leaveMatch(player);
     }
@@ -55,6 +57,6 @@ public class Playing implements PlayerState, Listener {
     private void leaveMatch(Player player) {
         Match currentMatch = MatchCoordinator.getInstance().getCurrentMatch();
         if (currentMatch != null) currentMatch.leaveMatch(player);
-        PlayerStateManager.getInstance().toggleStatus(player, PlayState.FREE.getValue());
+        PlayerStateManager.getInstance().toggle(player, PlayState.FREE.getValue());
     }
 }

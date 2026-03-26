@@ -8,19 +8,19 @@ class Renderer {
         reRenderWaitingRoom();
     }
 
-    public static void reRenderSpawnPoint() {
+    static void reRenderSpawnPoint() {
 
     }
 
-    public static void reRenderMainScreen() {
+    static void reRenderMainScreen() {
 
     }
 
-    public static void reRenderBackend() {
+    static void reRenderBackend() {
 
     }
 
-    public static void reRenderWaitingRoom() {
+    static void reRenderWaitingRoom() {
 
     }
 }

@@ -2,6 +2,7 @@ package io.github.qingranqae.voidairrace.core.matchsystem;
 
 import io.github.qingranqae.voidairrace.core.result.match.CoordinatorStartMatchResult;
 import io.github.qingranqae.voidairrace.core.result.match.CoordinatorStopMatchResult;
+import io.github.qingranqae.voidairrace.core.result.match.MatchOnStartResult;
 import io.github.qingranqae.voidairrace.service.config.Config;
 import io.github.qingranqae.voidairrace.service.config.ObservableYamlConfiguration;
 import io.github.qingranqae.voidairrace.service.config.files.FlagsKeys;
@@ -94,7 +95,14 @@ public class MatchCoordinator {
         this.currentMatch = new Match(matchConfig, mainClass);
 
         // 执行比赛开始逻辑
-        this.currentMatch.onStart();
+        MatchOnStartResult matchOnStartResult = currentMatch.onStart();
+        if (!matchOnStartResult.isSuccess()) {
+            Component msg = matchOnStartResult.getDisplayMessage() == null
+            ? Component.translatable("void_air_race.match.match_coordinator.start_match.failed.unknown_cause")
+            : Component.translatable("void_air_race.match.match_coordinator.start_match.failed.specified_reason")
+                    .arguments(matchOnStartResult.getDisplayMessage());
+            return CoordinatorStartMatchResult.failure(msg);
+        }
 
         // 更新状态为进行中
         this.matchState = MatchState.IN_PROGRESS;

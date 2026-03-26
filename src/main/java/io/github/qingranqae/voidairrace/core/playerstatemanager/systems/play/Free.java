@@ -16,11 +16,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class Free implements PlayerState, DefaultState, Listener {
-    private static final NamespacedKey id = PlayState.FREE.getValue();
+    private static final NamespacedKey stateId = PlayState.FREE.getValue();
 
     @Override
     public NamespacedKey getId() {
-        return id;
+        return stateId;
     }
 
     @Override
@@ -33,29 +33,36 @@ public class Free implements PlayerState, DefaultState, Listener {
         player.clearActiveItem();
     }
 
+    // ------ 切出到其他状态 ------
+
     @EventHandler
     public void onPlayerJoinMatch(PlayerJoinMatchEvent event) {
         PlayerStateManager playerStateManager = PlayerStateManager.getInstance();
         Player player = event.getPlayer();
-        if (!playerStateManager.onState(player, id)) return;
-        playerStateManager.toggleStatus(player, PlayState.PLAYING.getValue());
+        if (!playerStateManager.onState(player, stateId)) return;
+        playerStateManager.toggle(player, PlayState.PLAYING.getValue());
     }
 
     @EventHandler
     public void onMatchStarted(MatchStartedEvent event) {
         PlayerStateManager playerStateManager = PlayerStateManager.getInstance();
         event.getMatch().getConfig().contestants().forEach(contestant -> {
-            playerStateManager.toggleStatus(contestant, PlayState.PLAYING.getValue());
+            if (!PlayerStateManager.getInstance().onState(contestant, stateId)) return;
+            playerStateManager.toggle(contestant, PlayState.PLAYING.getValue());
         });
     }
 
+    // ------ 其他内部行为 ------
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        if (!PlayerStateManager.getInstance().onState(event.getPlayer(), stateId)) return;
         SpawnUtil.tpToSpawnPoint(event.getPlayer());
     }
 
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
+        if (!PlayerStateManager.getInstance().onState(event.getPlayer(), stateId)) return;
         event.setRespawnLocation(SpawnUtil.getSpawnLocation());
     }
 }

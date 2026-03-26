@@ -29,7 +29,7 @@ public class PlayerStateManager {
      * @param player 指定玩家
      * @param newState 新状态，自动识别状态所属体系
      * */
-    public void toggleStatus(Player player, NamespacedKey newState) {
+    public void toggle(Player player, NamespacedKey newState) {
         StateRegistry stateRegistry = StateRegistry.getInstance();
 
         // 调用旧状态切出方法
@@ -38,11 +38,11 @@ public class PlayerStateManager {
             stateRegistry.getStateInstance(oldState).onCutout(player);
         }
 
-        // 修改状态
-        changeStateInPDC(player, newState);
-
         // 调用新状态切入方法
         stateRegistry.getStateInstance(newState).onCutin(player);
+
+        // 修改状态。注：将PDC更新放在出入方法后是为了防止出现异常时储存状态和实际状态不一致
+        changeStateInPDC(player, newState);
     }
 
     /**

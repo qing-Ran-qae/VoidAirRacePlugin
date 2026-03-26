@@ -1,7 +1,7 @@
 package io.github.qingranqae.voidairrace.command;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import io.github.qingranqae.voidairrace.constants.Namespace;
+import io.github.qingranqae.voidairrace.constants.PermissionNode;
 import io.github.qingranqae.voidairrace.core.arenasystem.ArenaManager;
 import io.github.qingranqae.voidairrace.core.matchsystem.MatchCoordinator;
 import io.github.qingranqae.voidairrace.core.playerstatemanager.PlayerInitializer;
@@ -18,7 +18,10 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.Component;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,6 +37,7 @@ public class DebugCommand implements Listener {
     public void onPluginEnable(PluginEnableEvent event) {
         event.getMainClass().getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commandsEvent -> {
             LiteralCommandNode<CommandSourceStack> node = Commands.literal("vardebug")
+                    .requires(ctx -> ctx.getSender().hasPermission(PermissionNode.DEBUG_COMMAND.getValue()))
                     .then(Commands.literal("info")
                             .then(Commands.literal("player")
                                     .executes(ctx -> {

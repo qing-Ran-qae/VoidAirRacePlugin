@@ -26,10 +26,13 @@ public class StateRegistry {
     // ------
 
     /**
-     * 键为状态体系名称，值为状态体系的元数据
+     * 键为状态体系名称，值为对应状态体系的元数据
      * */
     private final HashMap<String, StateSystemMeta> nameToSystemMeta = new HashMap<>();
 
+    /**
+     * 键为状态id（包含所在体系名称），值为对应状态类的单例对象
+     * */
     private final HashMap<NamespacedKey, PlayerState> idToStateInstance = new HashMap<>();
 
     private final JavaPlugin mainClass;
@@ -39,6 +42,9 @@ public class StateRegistry {
         scanStates();
     }
 
+    /**
+     * 扫描所有状态类
+     * */
     private void scanStates() {
         List<Class<? extends PlayerState>> stateClasses = ClassScanner.scanSubclasses(mainClass, PlayerState.class, "io.github.qingranqae.voidairrace.core.playerstatemanager.systems");
         stateClasses.forEach(clazz -> {
