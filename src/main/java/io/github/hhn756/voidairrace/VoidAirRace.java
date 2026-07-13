@@ -1,0 +1,61 @@
+package io.github.hhn756.voidairrace;
+
+import io.github.hhn756.voidairrace.event.PluginEnableEvent;
+import io.github.hhn756.voidairrace.infrastructure.listenerregistrar.ListenerRegistrar;
+import io.github.hhn756.voidairrace.service.config.Config;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jspecify.annotations.NonNull;
+
+import java.util.logging.Logger;
+
+/**
+ * 插件主类
+ * */
+public class VoidAirRace extends JavaPlugin {
+    @Override
+    public void onEnable() {
+        // 文字画 "VAR"
+        Logger logger = getLogger();
+        logger.info(" __     ___    ____  ");
+        logger.info(" \\ \\   / / \\  |  _ \\ ");
+        logger.info("  \\ \\ / / _ \\ | |_) |");
+        logger.info("   \\ V / ___ \\|  _ < ");
+        logger.info("    \\_/_/   \\_\\_| \\_\\");
+
+        instance = this;
+
+        // 注册所有 Bukkit 事件监听器
+        ListenerRegistrar.RegisterAll(this);
+
+        // 发布插件启用事件
+        new PluginEnableEvent(this).callEvent();
+    }
+
+    @Override
+    public void onDisable() {
+        getLogger().fine("禁用中...");
+
+        // 保存内存中的配置
+        Config.getInstance().saveAll();
+
+        instance = null;
+    }
+
+    /**
+     * 插件本次启用中的主类实例
+     * */
+    private static VoidAirRace instance;
+
+    /**
+     * 用于获取插件主类实例，方便访问公共资源
+     *
+     * @return 主类实例
+     *
+     * @throws NullPointerException 主类实例不存在时抛出，正常情况下无法触发
+     * */
+    // 虽然禁用后为null，但 其他部分被禁止在插件禁用时运行 且 插件启用后首先会更新变量值，所以其他部分不可能获取到 null
+    public static @NonNull VoidAirRace getInstance() throws NullPointerException {
+        if (instance == null) throw new NullPointerException("插件主类实例不存在");
+        return instance;
+    }
+}

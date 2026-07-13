@@ -1,9 +1,18 @@
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-.kotlin
+/build/
+/.gradle/
+
+# 忽略整个 .idea 目录
+.idea/
+
+# 但允许（强制添加）共享配置部分
+!.idea/misc.xml
+!.idea/modules.xml
+!.idea/compiler.xml
+!.idea/encodings.xml
+!.idea/runConfigurations/
+!.idea/codeStyles/
+!.idea/vcs.xml
+!.idea/copyright/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

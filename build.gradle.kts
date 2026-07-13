@@ -3,7 +3,7 @@ plugins {
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
 }
 
-group = "io.github.qingranqae"
+group = "io.github.hhn756"
 version = "0.1"
 
 repositories {
@@ -33,7 +33,7 @@ tasks.withType<JavaCompile> {
 val deployDir = System.getenv("DEPLOY_DIR")?.replace("\\", "/") ?: "build/deploy"
 val isCI = System.getenv("CI")?.toBoolean() ?: false
 
-// ai写的，用于移动输出到服务端插件目录
+// ai写的，用于移动构建结果jar到服务端插件目录
 tasks.reobfJar {
     val fileName = if (isCI) {
         "${project.name}-${project.version}-${System.getenv("GIT_COMMIT")?.substring(0, 7) ?: "SNAPSHOT"}.jar"

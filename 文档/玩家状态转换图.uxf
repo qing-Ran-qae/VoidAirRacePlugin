@@ -2,46 +2,23 @@
 <diagram program="umlet" version="15.0.0">
   <zoom_level>10</zoom_level>
   <element>
-    <id>UMLActor</id>
-    <coordinates>
-      <x>940</x>
-      <y>450</y>
-      <w>80</w>
-      <h>110</h>
-    </coordinates>
-    <panel_attributes>任何玩家</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>970</x>
-      <y>550</y>
-      <w>220</w>
-      <h>220</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;-
-初始化
-（首次加入服务器时自动执行）</panel_attributes>
-    <additional_attributes>10.0;200.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>860</x>
-      <y>750</y>
+      <x>960</x>
+      <y>570</y>
       <w>240</w>
       <h>60</h>
     </coordinates>
     <panel_attributes>自由状态
-表示玩家不在比赛中</panel_attributes>
+表示玩家不在比赛中
+bg=cyan</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>860</x>
-      <y>970</y>
+      <x>960</x>
+      <y>790</y>
       <w>240</w>
       <h>60</h>
     </coordinates>
@@ -52,8 +29,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>870</x>
-      <y>800</y>
+      <x>970</x>
+      <y>620</y>
       <w>80</w>
       <h>190</h>
     </coordinates>
@@ -64,8 +41,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>980</x>
-      <y>800</y>
+      <x>1080</x>
+      <y>620</y>
       <w>80</w>
       <h>190</h>
     </coordinates>
@@ -76,13 +53,25 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1090</x>
-      <y>790</y>
+      <x>1190</x>
+      <y>610</y>
       <w>90</w>
       <h>210</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;-
-重生</panel_attributes>
+死亡</panel_attributes>
     <additional_attributes>10.0;10.0;40.0;10.0;40.0;190.0;10.0;190.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>820</x>
+      <y>470</y>
+      <w>540</w>
+      <h>460</h>
+    </coordinates>
+    <panel_attributes>游玩状态体系
+--</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>

@@ -1,9 +1,10 @@
 name: VoidAirRace
-description: Void air race Minigame
+description: VoidAirRace Minigame
 version: '0.1'
-author: qR
-main: io.github.qingranqae.voidairrace.VoidAirRacePlugin
+author: hhn756
+main: io.github.hhn756.voidairrace.VoidAirRace
 api-version: '1.21.11'
+prefix: <VoidAirRace>
 
 commands:
   vardebug:
