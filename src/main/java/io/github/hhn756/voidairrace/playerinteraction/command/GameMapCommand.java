@@ -2,13 +2,15 @@ package io.github.hhn756.voidairrace.playerinteraction.command;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.github.hhn756.voidairrace.constants.Categories;
 import io.github.hhn756.voidairrace.constants.PermissionNode;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
 import io.github.hhn756.voidairrace.core.map.GameMap;
 import io.github.hhn756.voidairrace.core.map.MapInitializer;
-import io.github.hhn756.voidairrace.core.map.MapRegistry;
+import io.github.hhn756.voidairrace.core.map.MapMeta;
 import io.github.hhn756.voidairrace.core.map.PlayableGameMap;
 import io.github.hhn756.voidairrace.infrastructure.BootstrapModule;
+import io.github.hhn756.voidairrace.infrastructure.registry.Registry;
 import io.github.hhn756.voidairrace.infrastructure.util.schedulingutil.SchedulingUtil;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -19,8 +21,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NonNull;
 
-import java.util.HashMap;
-import java.util.function.Supplier;
+import java.util.Collection;
 
 /**
  * 游戏地图管理命令
@@ -35,11 +36,12 @@ public class GameMapCommand implements BootstrapModule {
                     .then(Commands.literal("list")
                             .executes(ctx -> {
                                 CommandSender sender = ctx.getSource().getSender();
-                                HashMap<NamespacedKey, Supplier<GameMap>> maps = MapRegistry.getInstance().getAllMaps();
+
+                                Collection<MapMeta> maps = Registry.getInstance().list(Categories.MAP);
 
                                 sender.sendMessage(Component.translatable(TranslateKeys.Command.GameMapCmd.List.START));
-                                for (Supplier<GameMap> mapSupplier : maps.values()) {
-                                    GameMap mapInst = mapSupplier.get();
+                                for (MapMeta mapMeta : maps) {
+                                    GameMap mapInst = mapMeta.newInstance();
 
                                     String translateKey = (mapInst instanceof PlayableGameMap ?
                                             TranslateKeys.Command.GameMapCmd.List.PLAYABLE_MAP_INFO
@@ -71,8 +73,8 @@ public class GameMapCommand implements BootstrapModule {
                                             return 1;
                                         }
 
-                                        MapRegistry mapRegistry = MapRegistry.getInstance();
-                                        if (!mapRegistry.containsMap(targetMapId)) {
+                                        MapMeta mapMeta = Registry.getInstance().get(Categories.MAP, targetMapId);
+                                        if (mapMeta == null) {
                                             sender.sendMessage(
                                                     Component.translatable(
                                                             TranslateKeys.Command.GameMapCmd.Reinit.MAP_NOT_FOUND
@@ -86,7 +88,7 @@ public class GameMapCommand implements BootstrapModule {
                                         MapInitializer.getInstance().reinitMap(targetMapId).thenRunAsync(
                                                 () -> sender.sendMessage(
                                                         Component.translatable(TranslateKeys.Command.GameMapCmd.Reinit.OK)
-                                                                .arguments(mapRegistry.CreateMapInstance(targetMapId).getElementMeta().mainName())
+                                                                .arguments(mapMeta.getElementMeta().mainName())
                                                 ),
                                                 SchedulingUtil::runOnMainThread
                                         );

@@ -11,7 +11,6 @@ import java.net.URL;
 import java.util.Collection;
 
 public class Bootstrap implements PluginBootstrap {
-
     /**
      * 引导各模块
      * */

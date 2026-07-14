@@ -1,8 +1,8 @@
 package io.github.hhn756.voidairrace.event;
 
+import io.github.hhn756.voidairrace.infrastructure.config.ConfigFile;
+import io.github.hhn756.voidairrace.infrastructure.config.ConfigKey;
 import io.github.hhn756.voidairrace.infrastructure.util.TypeUtil;
-import io.github.hhn756.voidairrace.service.config.ConfigFile;
-import io.github.hhn756.voidairrace.service.config.ConfigKey;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.Nullable;

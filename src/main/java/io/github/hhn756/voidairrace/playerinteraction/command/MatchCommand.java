@@ -2,17 +2,18 @@ package io.github.hhn756.voidairrace.playerinteraction.command;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.github.hhn756.voidairrace.constants.Categories;
+import io.github.hhn756.voidairrace.constants.Namespace;
 import io.github.hhn756.voidairrace.constants.PermissionNode;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
-import io.github.hhn756.voidairrace.core.map.GameMap;
-import io.github.hhn756.voidairrace.core.map.MapRegistry;
-import io.github.hhn756.voidairrace.core.map.PlayableGameMap;
+import io.github.hhn756.voidairrace.core.map.MapMeta;
 import io.github.hhn756.voidairrace.core.match.MatchCoordinator;
 import io.github.hhn756.voidairrace.infrastructure.BootstrapModule;
+import io.github.hhn756.voidairrace.infrastructure.config.Config;
+import io.github.hhn756.voidairrace.infrastructure.config.files.GameSettingKeys;
+import io.github.hhn756.voidairrace.infrastructure.config.files.PublicFiles;
 import io.github.hhn756.voidairrace.infrastructure.listenerregistrar.AutoRegistration;
-import io.github.hhn756.voidairrace.service.config.Config;
-import io.github.hhn756.voidairrace.service.config.files.GameSettingKeys;
-import io.github.hhn756.voidairrace.service.config.files.PublicFiles;
+import io.github.hhn756.voidairrace.infrastructure.registry.Registry;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
@@ -67,45 +68,54 @@ public class MatchCommand implements BootstrapModule {
                                     .executes(ctx -> {
                                         CommandSender sender = ctx.getSource().getSender();
                                         String rawMapId = ctx.getArgument("map_id", String.class);
-                                        NamespacedKey newMapId = NamespacedKey.fromString(rawMapId);
-                                        if (newMapId == null) {
-                                            sender.sendMessage(Component.translatable(
-                                                            TranslateKeys.Command.MatchCmd.SetMap.ID_FORMAT_ERROR
-                                                    )
-                                                    .color(NamedTextColor.RED));
+                                        NamespacedKey formatedMapId = NamespacedKey.fromString(rawMapId);
+                                        Registry registry = Registry.getInstance();
+
+                                        // 如果输入格式错误
+                                        if (formatedMapId == null) {
+                                            sender.sendMessage(
+                                                    Component.translatable(TranslateKeys.Command.MatchCmd.SetMap.ID_FORMAT_ERROR)
+                                                            .color(NamedTextColor.RED));
                                             return 1;
                                         }
 
+                                        // 默认使用本插件的命名空间
+                                        if (!rawMapId.contains(":")) {
+                                            formatedMapId = new NamespacedKey(Namespace.str, formatedMapId.getKey());
+                                        }
+
                                         // 检查地图是否存在
-                                        if (!MapRegistry.getInstance().containsMap(newMapId)) {
-                                            sender.sendMessage(Component.translatable(
-                                                    TranslateKeys.Command.MatchCmd.SetMap.MAP_NOTFOUND
-                                                    ).arguments(Component.text(newMapId.toString()))
-                                                    .color(NamedTextColor.RED));
+                                        MapMeta mapMeta = registry.get(Categories.MAP, formatedMapId);
+                                        if (mapMeta == null) {
+                                            sender.sendMessage(
+                                                    Component.translatable(TranslateKeys.Command.MatchCmd.SetMap.MAP_NOTFOUND)
+                                                            .arguments(Component.text(formatedMapId.toString()))
+                                                            .color(NamedTextColor.RED)
+                                            );
                                             return 1;
                                         }
 
                                         // 检查地图是否可玩
-                                        GameMap targetMap = MapRegistry.getInstance().CreateMapInstance(newMapId);
-                                        if (!(targetMap instanceof PlayableGameMap)) {
-                                            sender.sendMessage(Component.translatable(
-                                                    TranslateKeys.Command.MatchCmd.SetMap.MAP_NOT_PLAYABLE
-                                                    ).arguments(Component.text(rawMapId))
-                                                    .color(NamedTextColor.RED));
+                                        if (!mapMeta.isPlayable()) {
+                                            sender.sendMessage(
+                                                    Component.translatable(TranslateKeys.Command.MatchCmd.SetMap.MAP_NOT_PLAYABLE)
+                                                            .arguments(Component.text(rawMapId))
+                                                            .color(NamedTextColor.RED)
+                                            );
                                             return 1;
                                         }
 
-                                        // 修改值
+                                        // 选中指定地图
                                         Config.getInstance()
                                                 .getYmlConfig(PublicFiles.GAME_SETTINGS)
-                                                .set(GameSettingKeys.SELECTED_MAP_ID, newMapId.toString());
+                                                .set(GameSettingKeys.SELECTED_MAP_ID, formatedMapId.toString());
 
                                         // 提示
                                         sender.sendMessage(
                                                 Component.translatable(TranslateKeys.Command.MatchCmd.SetMap.SUCCESS)
                                                         .arguments(
-                                                                Component.text(rawMapId),
-                                                                targetMap.getElementMeta().mainName()
+                                                                Component.text(formatedMapId.toString()),   // 地图 id
+                                                                mapMeta.getElementMeta().mainName()         // 地图显示名
                                                         )
                                         );
                                         return 1;
@@ -121,7 +131,7 @@ public class MatchCommand implements BootstrapModule {
                                                 .get(GameSettingKeys.SELECTED_MAP_ID, null)
                                 );
 
-                                GameMap selectedMap = MapRegistry.getInstance().CreateMapInstance(selectedMapId);
+                                MapMeta mapMeta = Registry.getInstance().get(Categories.MAP, selectedMapId);
                                 sender.sendMessage(
                                         Component.translatable(TranslateKeys.Command.MatchCmd.GetMap.SUCCESS)
                                                 .arguments(
@@ -129,10 +139,10 @@ public class MatchCommand implements BootstrapModule {
                                                                 ? "null"
                                                                 : selectedMapId.toString()
                                                         ),
-                                                        selectedMap == null
+                                                        mapMeta == null
                                                             ? Component.translatable(
                                                                     TranslateKeys.Command.MatchCmd.GetMap.DEFAULT_MAP_NAME)
-                                                            : selectedMap.getElementMeta().mainName()
+                                                            : mapMeta.getElementMeta().mainName()
                                                 )
                                 );
                                 return 1;

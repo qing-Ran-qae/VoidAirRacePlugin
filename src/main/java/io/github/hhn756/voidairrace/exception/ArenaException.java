@@ -7,15 +7,15 @@ import org.jspecify.annotations.Nullable;
  * 竞技场相关操作会抛出的异常
  * */
 public class ArenaException extends RuntimeException implements UserFriendlyException {
-    public ArenaException(@Nullable String message, @Nullable Component displayMessage) {
+    public ArenaException(@Nullable String message, @Nullable Component userMessage) {
         super(message);
-        this.displayMessage = displayMessage;
+        this.userMessage = userMessage;
     }
 
-    private final @Nullable Component displayMessage;
+    private final @Nullable Component userMessage;
 
     @Override
-    public @Nullable Component getDisplayMessage() {
-        return displayMessage;
+    public @Nullable Component getUserMessage() {
+        return userMessage;
     }
 }

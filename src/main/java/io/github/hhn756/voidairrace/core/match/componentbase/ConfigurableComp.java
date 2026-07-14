@@ -2,7 +2,7 @@ package io.github.hhn756.voidairrace.core.match.componentbase;
 
 import io.github.hhn756.voidairrace.core.match.ComponentPriority;
 import io.github.hhn756.voidairrace.core.match.MatchConfig;
-import io.github.hhn756.voidairrace.core.result.base.ValueResult;
+import io.github.hhn756.voidairrace.result.base.ValueResult;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NonNull;

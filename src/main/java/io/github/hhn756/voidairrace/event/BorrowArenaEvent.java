@@ -1,6 +1,6 @@
 package io.github.hhn756.voidairrace.event;
 
-import io.github.hhn756.voidairrace.core.arena.ArenaToken;
+import io.github.hhn756.voidairrace.service.arena.ArenaToken;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jspecify.annotations.NonNull;

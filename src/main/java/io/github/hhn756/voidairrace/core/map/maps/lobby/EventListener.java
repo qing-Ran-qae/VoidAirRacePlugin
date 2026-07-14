@@ -1,7 +1,7 @@
 package io.github.hhn756.voidairrace.core.map.maps.lobby;
 
-import io.github.hhn756.voidairrace.core.map.MapRegistry;
-import io.github.hhn756.voidairrace.core.map.PlayableGameMap;
+import io.github.hhn756.voidairrace.constants.Categories;
+import io.github.hhn756.voidairrace.core.map.MapMeta;
 import io.github.hhn756.voidairrace.core.playerstatemanager.PlayerStateManager;
 import io.github.hhn756.voidairrace.core.playerstatemanager.systems.StateSystem;
 import io.github.hhn756.voidairrace.core.playerstatemanager.systems.play.PlayState;
@@ -11,10 +11,11 @@ import io.github.hhn756.voidairrace.event.ConfigFieldChangeEvent;
 import io.github.hhn756.voidairrace.event.MatchOverEvent;
 import io.github.hhn756.voidairrace.event.MatchStartedEvent;
 import io.github.hhn756.voidairrace.event.PluginEnableEvent;
+import io.github.hhn756.voidairrace.infrastructure.config.Config;
+import io.github.hhn756.voidairrace.infrastructure.config.files.GameSettingKeys;
+import io.github.hhn756.voidairrace.infrastructure.config.files.PublicFiles;
 import io.github.hhn756.voidairrace.infrastructure.listenerregistrar.AutoRegistration;
-import io.github.hhn756.voidairrace.service.config.Config;
-import io.github.hhn756.voidairrace.service.config.files.GameSettingKeys;
-import io.github.hhn756.voidairrace.service.config.files.PublicFiles;
+import io.github.hhn756.voidairrace.infrastructure.registry.Registry;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -81,9 +82,10 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onConfigChange(ConfigFieldChangeEvent  event) {
+    public void onConfigChange(ConfigFieldChangeEvent event) {
         if (event.getPath().equals(GameSettingKeys.SELECTED_MAP_ID.path())) {
             NamespacedKey newMapId;
+            Registry registry = Registry.getInstance();
             String rawMapId = event.getNewValue(GameSettingKeys.SELECTED_MAP_ID);
             if (rawMapId != null) {
                 newMapId = NamespacedKey.fromString(rawMapId);
@@ -96,8 +98,9 @@ public class EventListener implements Listener {
 
             // 更新 激活的 队伍选择区域 数量
             try {
-                if (MapRegistry.getInstance().CreateMapInstance(newMapId) instanceof PlayableGameMap map) {
-                    State.activeTeamArea = map.maxTeams();
+                MapMeta mapMeta = registry.get(Categories.MAP, newMapId);
+                if (mapMeta != null && mapMeta.maxTeams() != null) {
+                    State.activeTeamArea = mapMeta.maxTeams(); // 不会是null
                 }
             } catch (IllegalArgumentException e) {
                 State.activeTeamArea = 0;
@@ -136,8 +139,9 @@ public class EventListener implements Listener {
                         .getYmlConfig(PublicFiles.GAME_SETTINGS)
                         .get(GameSettingKeys.SELECTED_MAP_ID)
         );
-        if (MapRegistry.getInstance().CreateMapInstance(selectedMapId) instanceof PlayableGameMap map) {
-            State.activeTeamArea = map.maxTeams();
+        MapMeta mapMeta = Registry.getInstance().get(Categories.MAP, selectedMapId);
+        if (mapMeta != null && mapMeta.maxTeams() != null) {
+            State.activeTeamArea = mapMeta.maxTeams();  // 不会是null
         } else {
             State.activeTeamArea = 0;
         }

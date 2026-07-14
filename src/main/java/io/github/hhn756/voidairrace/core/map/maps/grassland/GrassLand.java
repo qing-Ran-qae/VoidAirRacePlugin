@@ -2,8 +2,7 @@ package io.github.hhn756.voidairrace.core.map.maps.grassland;
 
 import io.github.hhn756.voidairrace.constants.Namespace;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
-import io.github.hhn756.voidairrace.core.arena.ArenaManager;
-import io.github.hhn756.voidairrace.core.arena.ArenaToken;
+import io.github.hhn756.voidairrace.core.custom.GameElementMeta;
 import io.github.hhn756.voidairrace.core.map.PlayableGameMap;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.core.match.basecomponents.contestant.ContestantComp;
@@ -14,11 +13,13 @@ import io.github.hhn756.voidairrace.core.matchrule.MatchRule;
 import io.github.hhn756.voidairrace.core.matchrule.RuleComp;
 import io.github.hhn756.voidairrace.core.matchrule.RuleRegistry;
 import io.github.hhn756.voidairrace.core.team.TeamRoster;
-import io.github.hhn756.voidairrace.custom.GameElementMeta;
 import io.github.hhn756.voidairrace.exception.ArenaException;
+import io.github.hhn756.voidairrace.infrastructure.config.Config;
 import io.github.hhn756.voidairrace.infrastructure.util.schedulingutil.SchedulingUtil;
 import io.github.hhn756.voidairrace.infrastructure.util.world.BlockRegion;
 import io.github.hhn756.voidairrace.infrastructure.util.world.blockfinder.BlockFinder;
+import io.github.hhn756.voidairrace.service.arena.ArenaManager;
+import io.github.hhn756.voidairrace.service.arena.ArenaToken;
 import io.papermc.paper.event.player.PlayerFailMoveEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -117,14 +118,14 @@ public class GrassLand extends PlayableGameMap implements Listener {
      */
     private void deliverSupplies() {
         // 获取箱子坐标列表
-        List<Location> supplies = getYmlConfig(MapConfigFiles.DATA).get(MapConfigKeys.SUPPLY_CHESTS);
+        List<Location> supplies = Config.getInstance().getYmlConfig(MapConfigFiles.DATA).get(MapConfigKeys.SUPPLY_CHESTS);
         if (supplies == null || supplies.isEmpty()) {
             return;
         }
 
         // 要刷新的物品
         LootTable supplyLoot = Bukkit.getLootTable(
-                new NamespacedKey(Namespace.str, "maps/grass_land/supply")
+                new NamespacedKey(Namespace.str, "maps/void_air_race/grass_land/supply")
         );
 
         for (Location loc : supplies) {
@@ -237,7 +238,9 @@ public class GrassLand extends PlayableGameMap implements Listener {
             for (Location loc : locations) {
                 loc.setWorld(world);
             }
-            getYmlConfig(MapConfigFiles.DATA).set(MapConfigKeys.SUPPLY_CHESTS, locations);
+            Config.getInstance()
+                    .getYmlConfig(MapConfigFiles.DATA)
+                    .set(MapConfigKeys.SUPPLY_CHESTS, locations);
             tempArena.returnArena();
         }, SchedulingUtil::runOnMainThread);
     }

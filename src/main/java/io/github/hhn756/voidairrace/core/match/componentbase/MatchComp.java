@@ -2,10 +2,10 @@ package io.github.hhn756.voidairrace.core.match.componentbase;
 
 import io.github.hhn756.voidairrace.VoidAirRace;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
-import io.github.hhn756.voidairrace.custom.GameElementMeta;
-import io.github.hhn756.voidairrace.service.config.Config;
-import io.github.hhn756.voidairrace.service.config.ConfigFile;
-import io.github.hhn756.voidairrace.service.config.YamlConfig;
+import io.github.hhn756.voidairrace.core.custom.GameElementMeta;
+import io.github.hhn756.voidairrace.infrastructure.config.Config;
+import io.github.hhn756.voidairrace.infrastructure.config.ConfigFile;
+import io.github.hhn756.voidairrace.infrastructure.config.YamlConfig;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.jspecify.annotations.NonNull;

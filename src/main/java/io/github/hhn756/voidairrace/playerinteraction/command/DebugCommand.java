@@ -2,7 +2,6 @@ package io.github.hhn756.voidairrace.playerinteraction.command;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.github.hhn756.voidairrace.constants.PermissionNode;
-import io.github.hhn756.voidairrace.core.arena.ArenaManager;
 import io.github.hhn756.voidairrace.core.match.MatchCoordinator;
 import io.github.hhn756.voidairrace.core.playerstatemanager.PlayerInitializer;
 import io.github.hhn756.voidairrace.core.playerstatemanager.PlayerStateManager;
@@ -10,10 +9,11 @@ import io.github.hhn756.voidairrace.core.playerstatemanager.StateRegistry;
 import io.github.hhn756.voidairrace.core.playerstatemanager.StateSystemMeta;
 import io.github.hhn756.voidairrace.core.team.TeamRoster;
 import io.github.hhn756.voidairrace.event.PluginEnableEvent;
+import io.github.hhn756.voidairrace.infrastructure.config.Config;
+import io.github.hhn756.voidairrace.infrastructure.config.files.FlagsKeys;
+import io.github.hhn756.voidairrace.infrastructure.config.files.PublicFiles;
 import io.github.hhn756.voidairrace.infrastructure.listenerregistrar.AutoRegistration;
-import io.github.hhn756.voidairrace.service.config.Config;
-import io.github.hhn756.voidairrace.service.config.files.FlagsKeys;
-import io.github.hhn756.voidairrace.service.config.files.PublicFiles;
+import io.github.hhn756.voidairrace.service.arena.ArenaManager;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
@@ -143,7 +143,6 @@ public class DebugCommand implements Listener {
                                     })
                             ).then(Commands.literal("b")
                                     .executes(ctx -> {
-
                                         return 1;
                                     })
                             )

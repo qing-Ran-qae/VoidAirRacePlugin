@@ -1,14 +1,14 @@
 package io.github.hhn756.voidairrace.core.map;
 
 import io.github.hhn756.voidairrace.core.match.Match;
-import io.github.hhn756.voidairrace.core.result.base.OperationResult;
+import io.github.hhn756.voidairrace.result.base.OperationResult;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NonNull;
 
 /**
- * 可作为比赛场地（即可游玩）的地图的基类<br>
+ * 可游玩（可被比赛使用）的游戏地图的基类<br>
  * 注：每局比赛都会使用不同地图实例，如需跨对局共享数据可以使用静态属性或其他类来储存数据
  * */
 public abstract class PlayableGameMap extends GameMap {
@@ -51,7 +51,7 @@ public abstract class PlayableGameMap extends GameMap {
             return new StartResult(true, null);
         }
 
-        public static StartResult failure(Component displayMessage) {
+        public static StartResult failure(@Nullable Component displayMessage) {
             return new StartResult(false, displayMessage);
         }
     }
@@ -65,7 +65,7 @@ public abstract class PlayableGameMap extends GameMap {
             return new OverResult(true, null);
         }
 
-        public static OverResult failure(Component displayMessage) {
+        public static OverResult failure(@Nullable Component displayMessage) {
             return new OverResult(false, displayMessage);
         }
     }

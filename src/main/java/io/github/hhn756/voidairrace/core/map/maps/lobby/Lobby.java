@@ -1,8 +1,8 @@
 package io.github.hhn756.voidairrace.core.map.maps.lobby;
 
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
+import io.github.hhn756.voidairrace.core.custom.GameElementMeta;
 import io.github.hhn756.voidairrace.core.map.GameMap;
-import io.github.hhn756.voidairrace.custom.GameElementMeta;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;

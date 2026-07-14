@@ -2,10 +2,10 @@ package io.github.hhn756.voidairrace.core.matchrule;
 
 import io.github.hhn756.voidairrace.constants.Namespace;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
+import io.github.hhn756.voidairrace.core.custom.GameElement;
+import io.github.hhn756.voidairrace.core.custom.GameElementMeta;
 import io.github.hhn756.voidairrace.core.match.Match;
-import io.github.hhn756.voidairrace.core.result.base.OperationResult;
-import io.github.hhn756.voidairrace.custom.GameElement;
-import io.github.hhn756.voidairrace.custom.GameElementMeta;
+import io.github.hhn756.voidairrace.result.base.OperationResult;
 import net.kyori.adventure.text.Component;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;

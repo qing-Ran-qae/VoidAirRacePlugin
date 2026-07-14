@@ -13,7 +13,7 @@ import org.bukkit.event.Listener;
 public class EventListener implements Listener {
     @EventHandler(priority = EventPriority.LOW)
     public void onPluginEnable(PluginEnableEvent event) {
-        MapRegistry.load();
+        MapRegistrar.registerMaps();
         MapInitializer.load();
         // 初始化所有地图
         MapInitializer.getInstance().initAllMapsAsync();

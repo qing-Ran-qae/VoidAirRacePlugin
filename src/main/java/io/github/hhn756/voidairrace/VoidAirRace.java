@@ -1,8 +1,8 @@
 package io.github.hhn756.voidairrace;
 
 import io.github.hhn756.voidairrace.event.PluginEnableEvent;
+import io.github.hhn756.voidairrace.infrastructure.config.Config;
 import io.github.hhn756.voidairrace.infrastructure.listenerregistrar.ListenerRegistrar;
-import io.github.hhn756.voidairrace.service.config.Config;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NonNull;
 

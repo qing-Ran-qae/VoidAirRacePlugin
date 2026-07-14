@@ -1,12 +1,11 @@
 package io.github.hhn756.voidairrace.core.map;
 
 import io.github.hhn756.voidairrace.constants.Namespace;
-import io.github.hhn756.voidairrace.custom.GameElement;
-import io.github.hhn756.voidairrace.service.config.Config;
-import io.github.hhn756.voidairrace.service.config.YamlConfig;
+import io.github.hhn756.voidairrace.core.custom.GameElement;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -47,22 +46,28 @@ public abstract class GameMap implements GameElement {
     }
 
     /**
-     * 获取一个属于游戏地图的配置文件（yaml格式）
+     * 获取一个属于指定游戏地图的配置文件的路径，不含后缀名、用{@code /}划分层级
      *
-     * @param filePath 目标文件
+     * @param mapId 指定地图
+     * @param filePath 指定文件相对地图配置目录的路径，不含后缀名、用{@code /}划分层级
      * */
-    public @NonNull YamlConfig getYmlConfig(@NonNull String filePath) {
-        return Config.getInstance().getYmlConfig(filePath);
+    public static @NonNull String configPath(@NonNull NamespacedKey mapId, @NonNull String filePath) {
+        return "maps/"
+                + mapId.getNamespace()
+                + "/"
+                + mapId.getKey()
+                + "/"
+                + filePath;
     }
 
     /**
-     * 获取一个属于此地图的资源的路径
+     * 获取一个属于此地图的在插件JAR内资源的路径
      *
      * @param path 资源路径（含后缀名），相对地图目录
      *
-     * @return 完整资源路径，以 {@code /} 开头
+     * @return {@code path}不为{@code null}时完整资源路径（以 {@code /} 开头），否则返回地图资源目录路径（以 {@code /} 开头）
      * */
-    public String resourcePath(String path) {
-        return "/map/" + getElementMeta().id() + "/" + path;
+    public @NonNull String resourcePath(@Nullable String path) {
+        return "/maps/" + getElementMeta().id() + "/" + path;
     }
 }

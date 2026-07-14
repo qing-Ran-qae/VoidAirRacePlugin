@@ -1,11 +1,11 @@
 package io.github.hhn756.voidairrace.core.match;
 
 import io.github.hhn756.voidairrace.event.PluginEnableEvent;
+import io.github.hhn756.voidairrace.infrastructure.config.Config;
+import io.github.hhn756.voidairrace.infrastructure.config.YamlConfig;
+import io.github.hhn756.voidairrace.infrastructure.config.files.FlagsKeys;
+import io.github.hhn756.voidairrace.infrastructure.config.files.PublicFiles;
 import io.github.hhn756.voidairrace.infrastructure.listenerregistrar.AutoRegistration;
-import io.github.hhn756.voidairrace.service.config.Config;
-import io.github.hhn756.voidairrace.service.config.YamlConfig;
-import io.github.hhn756.voidairrace.service.config.files.FlagsKeys;
-import io.github.hhn756.voidairrace.service.config.files.PublicFiles;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

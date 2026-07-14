@@ -1,14 +1,16 @@
 package io.github.hhn756.voidairrace.core.map;
 
 import io.github.hhn756.voidairrace.VoidAirRace;
+import io.github.hhn756.voidairrace.constants.Categories;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
 import io.github.hhn756.voidairrace.core.map.maps.grassland.GrassLand;
 import io.github.hhn756.voidairrace.core.match.ComponentPriority;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.core.match.componentbase.*;
-import io.github.hhn756.voidairrace.service.config.Config;
-import io.github.hhn756.voidairrace.service.config.files.GameSettingKeys;
-import io.github.hhn756.voidairrace.service.config.files.PublicFiles;
+import io.github.hhn756.voidairrace.infrastructure.config.Config;
+import io.github.hhn756.voidairrace.infrastructure.config.files.GameSettingKeys;
+import io.github.hhn756.voidairrace.infrastructure.config.files.PublicFiles;
+import io.github.hhn756.voidairrace.infrastructure.registry.Registry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -35,9 +37,7 @@ public class MapComp extends MatchComp
     @Override
     public @NonNull CustomConfigResult<MapConfig> createCustomConfig(@Nullable MapECFG expected) {
         NamespacedKey mapId;
-        MapRegistry mapRegistry = MapRegistry.getInstance();
 
-        // 检查参数是否为空
         if (expected != null) {
             mapId = expected.expectedMapId();
         } else {
@@ -48,9 +48,10 @@ public class MapComp extends MatchComp
                     null
             );
         }
+        MapMeta mapMeta = Registry.getInstance().get(Categories.MAP, expected.expectedMapId());
 
-        // 检查地图是否存在
-        if (!(mapRegistry.containsMap(expected.expectedMapId()))) {
+        // 检查 变量是否为null 和 地图是否存在
+        if (mapMeta == null) {
             return new CustomConfigResult<>(
                     false,
                     null,
@@ -58,8 +59,8 @@ public class MapComp extends MatchComp
             );
         }
 
-        // 检查是否可玩
-        if (!(mapRegistry.CreateMapInstance(mapId) instanceof PlayableGameMap playableMap)) {
+        // 检查地图是否可玩
+        if (!mapMeta.isPlayable()) {
             return new CustomConfigResult<>(
                     false,
                     null,
@@ -67,7 +68,7 @@ public class MapComp extends MatchComp
             );
         }
 
-        return CustomConfigResult.success(new MapConfig(playableMap));
+        return CustomConfigResult.success(new MapConfig((PlayableGameMap) mapMeta.newInstance()));
     }
 
     @Override
@@ -77,7 +78,7 @@ public class MapComp extends MatchComp
                         .getYmlConfig(PublicFiles.GAME_SETTINGS)
                         .get(GameSettingKeys.SELECTED_MAP_ID, GrassLand.getID().toString())
         );
-        GameMap map = MapRegistry.getInstance().CreateMapInstance(selectedMapId);
+        GameMap map = Registry.getInstance().get(Categories.MAP, selectedMapId).newInstance();
         if (!(map instanceof PlayableGameMap playableMap)) {
             return new DefaultConfigResult<>(
                     false,

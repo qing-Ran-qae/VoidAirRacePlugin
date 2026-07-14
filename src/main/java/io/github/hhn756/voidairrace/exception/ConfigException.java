@@ -9,20 +9,20 @@ import org.jspecify.annotations.Nullable;
  */
 public class ConfigException extends RuntimeException implements UserFriendlyException {
 
-    private final Component displayMessage;
+    private final Component userMessage;
 
-    public ConfigException(String message, Component displayMessage) {
+    public ConfigException(String message, Component userMessage) {
         super(message);
-        this.displayMessage = displayMessage;
+        this.userMessage = userMessage;
     }
 
-    public ConfigException(String message, Throwable cause, Component displayMessage) {
+    public ConfigException(String message, Throwable cause, Component userMessage) {
         super(message, cause);
-        this.displayMessage = displayMessage;
+        this.userMessage = userMessage;
     }
 
     @Override
-    public @Nullable Component getDisplayMessage() {
-        return displayMessage;
+    public @Nullable Component getUserMessage() {
+        return userMessage;
     }
 }

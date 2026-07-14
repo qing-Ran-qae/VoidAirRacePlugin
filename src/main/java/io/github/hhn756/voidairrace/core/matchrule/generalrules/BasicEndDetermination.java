@@ -2,12 +2,12 @@ package io.github.hhn756.voidairrace.core.matchrule.generalrules;
 
 import io.github.hhn756.voidairrace.constants.Namespace;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
+import io.github.hhn756.voidairrace.core.custom.GameElementMeta;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.core.match.MatchCoordinator;
 import io.github.hhn756.voidairrace.core.match.basecomponents.contestant.ContestantComp;
 import io.github.hhn756.voidairrace.core.match.basecomponents.gametime.GameTimeComp;
 import io.github.hhn756.voidairrace.core.matchrule.MatchRule;
-import io.github.hhn756.voidairrace.custom.GameElementMeta;
 import io.github.hhn756.voidairrace.event.MatchStatusChangedEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.EventHandler;

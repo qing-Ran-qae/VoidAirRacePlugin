@@ -5,7 +5,7 @@ import io.github.hhn756.voidairrace.constants.TranslateKeys;
 import io.github.hhn756.voidairrace.core.match.ComponentPriority;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.core.match.componentbase.*;
-import io.github.hhn756.voidairrace.core.result.base.OperationResult;
+import io.github.hhn756.voidairrace.result.base.OperationResult;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;

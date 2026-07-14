@@ -3,15 +3,15 @@ package io.github.hhn756.voidairrace.core.match;
 import io.github.hhn756.voidairrace.VoidAirRace;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
 import io.github.hhn756.voidairrace.core.match.componentbase.*;
-import io.github.hhn756.voidairrace.core.result.base.OperationResult;
-import io.github.hhn756.voidairrace.core.result.base.ValueResult;
 import io.github.hhn756.voidairrace.event.MatchOverEvent;
 import io.github.hhn756.voidairrace.event.MatchStartedEvent;
-import io.github.hhn756.voidairrace.service.config.Config;
-import io.github.hhn756.voidairrace.service.config.ConfigFile;
-import io.github.hhn756.voidairrace.service.config.ConfigKey;
-import io.github.hhn756.voidairrace.service.config.YamlConfig;
-import io.github.hhn756.voidairrace.service.config.files.PublicFiles;
+import io.github.hhn756.voidairrace.infrastructure.config.Config;
+import io.github.hhn756.voidairrace.infrastructure.config.ConfigFile;
+import io.github.hhn756.voidairrace.infrastructure.config.ConfigKey;
+import io.github.hhn756.voidairrace.infrastructure.config.YamlConfig;
+import io.github.hhn756.voidairrace.infrastructure.config.files.PublicFiles;
+import io.github.hhn756.voidairrace.result.base.OperationResult;
+import io.github.hhn756.voidairrace.result.base.ValueResult;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -74,7 +74,7 @@ public class Match {
     /**
      * 使比赛开始
      *
-     * @param args 传递给所有组件的参数。组件收到的参数可以为{@code null}（即传入列表不包含对应组件的参数）
+     * @param args 传递给所有组件的参数。组件收到的参数可以为{@code null}（即传入列表不包含对应组件的参数）<br>
      *             此方法会将每个参数对象传递给其{@link CustomData#getSource()}返回类型的组件
      * */
     public @NonNull StartResult start(@Nullable CustomData... args) {

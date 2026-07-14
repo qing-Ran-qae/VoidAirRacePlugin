@@ -62,7 +62,7 @@ public class StateRegistry {
                 if (DefaultState.class.isAssignableFrom(clazz)) {
                     if (nameToSystemMeta.containsKey(stateId.getNamespace())) {
                         mainClass.getLogger().warning(
-                                "状态体系 '" + system + "' 中有重复的默认状态：" + clazz.getName()
+                                "状态体系 “" + system + "” 中有重复的默认状态：" + clazz.getName()
                         );
                     } else {
                         nameToSystemMeta.put(system, new StateSystemMeta(system, key));

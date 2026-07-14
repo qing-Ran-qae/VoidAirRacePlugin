@@ -6,9 +6,9 @@ import io.github.hhn756.voidairrace.core.match.basecomponents.contestant.Contest
 import io.github.hhn756.voidairrace.core.playerstatemanager.PlayerState;
 import io.github.hhn756.voidairrace.core.playerstatemanager.PlayerStateManager;
 import io.github.hhn756.voidairrace.event.MatchOverEvent;
-import io.github.hhn756.voidairrace.service.config.Config;
-import io.github.hhn756.voidairrace.service.config.files.GlobalSettingKeys;
-import io.github.hhn756.voidairrace.service.config.files.PublicFiles;
+import io.github.hhn756.voidairrace.infrastructure.config.Config;
+import io.github.hhn756.voidairrace.infrastructure.config.files.GlobalSettingKeys;
+import io.github.hhn756.voidairrace.infrastructure.config.files.PublicFiles;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;

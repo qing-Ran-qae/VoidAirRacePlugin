@@ -1,11 +1,11 @@
 package io.github.hhn756.voidairrace.core.match;
 
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
-import io.github.hhn756.voidairrace.core.result.base.OperationResult;
-import io.github.hhn756.voidairrace.service.config.Config;
-import io.github.hhn756.voidairrace.service.config.YamlConfig;
-import io.github.hhn756.voidairrace.service.config.files.FlagsKeys;
-import io.github.hhn756.voidairrace.service.config.files.PublicFiles;
+import io.github.hhn756.voidairrace.infrastructure.config.Config;
+import io.github.hhn756.voidairrace.infrastructure.config.YamlConfig;
+import io.github.hhn756.voidairrace.infrastructure.config.files.FlagsKeys;
+import io.github.hhn756.voidairrace.infrastructure.config.files.PublicFiles;
+import io.github.hhn756.voidairrace.result.base.OperationResult;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
@@ -153,8 +153,7 @@ public class MatchCoordinator {
     }
 
     /**
-     * 将 “标志” 配置文件中的 “当服务器启动时结束比赛” 标志设置为指定值，
-     * 并保存配置文件
+     * 将 “标志” 配置文件中的 “当服务器启动时结束比赛” 标志设置为指定值，并保存配置文件
      * */
     private void setAndSaveStopFlag(boolean newValue) {
         Config configInst = Config.getInstance();
@@ -164,7 +163,10 @@ public class MatchCoordinator {
     }
 
     /**
-     * @return 比赛目前是否正在进行。如果当前比赛状态不为 {@link MatchState#SCHEDULED} 则返回 {@code true}，否则返回 {@code false}
+     * 检查比赛是否正在进行<br>
+     * 具体来说：如果此比赛的当前状态不为 {@link MatchState#SCHEDULED} 则返回 {@code true}，否则返回 {@code false}
+     *
+     * @return 比赛目前是否正在进行
      * */
     public boolean matchIsRunning() {
         return this.getMatchState() != MatchState.SCHEDULED;

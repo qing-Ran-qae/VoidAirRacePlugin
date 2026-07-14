@@ -1,6 +1,6 @@
 package io.github.hhn756.voidairrace.core.match.basecomponents.scope;
 
-import io.github.hhn756.voidairrace.core.arena.ArenaToken;
+import io.github.hhn756.voidairrace.service.arena.ArenaToken;
 import org.jspecify.annotations.NonNull;
 
 import java.util.HashSet;

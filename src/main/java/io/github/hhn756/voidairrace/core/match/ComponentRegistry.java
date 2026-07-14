@@ -3,9 +3,9 @@ package io.github.hhn756.voidairrace.core.match;
 import io.github.hhn756.voidairrace.VoidAirRace;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
 import io.github.hhn756.voidairrace.core.match.componentbase.MatchComp;
-import io.github.hhn756.voidairrace.core.result.base.OperationResult;
-import io.github.hhn756.voidairrace.core.result.base.ValueResult;
 import io.github.hhn756.voidairrace.infrastructure.util.ClassScanner;
+import io.github.hhn756.voidairrace.result.base.OperationResult;
+import io.github.hhn756.voidairrace.result.base.ValueResult;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
@@ -60,7 +60,7 @@ public class ComponentRegistry {
                 Constructor<MatchComp> constructor = componentClass.getConstructor();
                 componentConstructors.put(componentClass, constructor);
             } catch (NoSuchMethodException e) {
-                logger.warning("注册比赛组件 '" + componentClass.getName() + "' 失败，此组件类型没有公开的无参构造器！这可能是开发者的疏忽");
+                logger.warning("注册比赛组件 “" + componentClass.getName() + "” 失败，此组件类型没有公开的无参构造器！这可能是开发者的疏忽");
             }
         }
     }

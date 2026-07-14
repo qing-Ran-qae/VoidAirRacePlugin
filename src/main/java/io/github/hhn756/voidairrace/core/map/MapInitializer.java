@@ -1,17 +1,17 @@
 package io.github.hhn756.voidairrace.core.map;
 
 import io.github.hhn756.voidairrace.VoidAirRace;
+import io.github.hhn756.voidairrace.constants.Categories;
+import io.github.hhn756.voidairrace.infrastructure.config.Config;
+import io.github.hhn756.voidairrace.infrastructure.config.YamlConfig;
+import io.github.hhn756.voidairrace.infrastructure.config.files.PublicFiles;
+import io.github.hhn756.voidairrace.infrastructure.registry.Registry;
 import io.github.hhn756.voidairrace.infrastructure.util.schedulingutil.SchedulingUtil;
-import io.github.hhn756.voidairrace.service.config.Config;
-import io.github.hhn756.voidairrace.service.config.YamlConfig;
-import io.github.hhn756.voidairrace.service.config.files.PublicFiles;
 import org.bukkit.NamespacedKey;
 import org.jspecify.annotations.NonNull;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,13 +49,13 @@ public class MapInitializer {
      */
     public void initAllMapsAsync() {
         // 获取要初始化的地图
-        HashMap<NamespacedKey, Supplier<GameMap>> maps = MapRegistry.getInstance().getAllMaps();
+        Collection<MapMeta> maps = Registry.getInstance().list(Categories.MAP);
 
         // 初始化任务
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
 
-        for (Map.Entry<NamespacedKey, Supplier<GameMap>> entry : maps.entrySet()) {
-            NamespacedKey mapId = entry.getKey();
+        for (MapMeta meta : maps) {
+            NamespacedKey mapId = meta.getElementMeta().id();
             if (isInited(mapId)) continue;
 
             // 链接初始化任务，确保顺序执行
@@ -75,10 +75,7 @@ public class MapInitializer {
      * @throws IllegalArgumentException 当指定地图不存在时抛出
      */
     public CompletableFuture<Void> reinitMap(NamespacedKey mapId) throws IllegalArgumentException {
-        GameMap mapInst = MapRegistry.getInstance().CreateMapInstance(mapId);
-        if (mapInst == null) {
-            throw new IllegalArgumentException("地图 " + mapId + " 不存在");
-        }
+        GameMap mapInst = Registry.getInstance().get(Categories.MAP, mapId).newInstance();
 
         // 如果地图之前已初始化，先执行同步清理
         if (isInited(mapId)) {
@@ -100,12 +97,7 @@ public class MapInitializer {
      * @return 表示初始化完成的 future
      */
     private CompletableFuture<Void> initOneMap(@NonNull NamespacedKey mapId) {
-        GameMap mapInst = MapRegistry.getInstance().CreateMapInstance(mapId);
-        if (mapInst == null) {
-            // 这种情况理论上不会发生，因为调用前已检查
-            return CompletableFuture.failedFuture(new IllegalArgumentException("地图 " + mapId + " 不存在"));
-        }
-
+        GameMap mapInst = Registry.getInstance().get(Categories.MAP, mapId).newInstance();
         try {
             return mapInst.initAsync(mainClass)
                     .thenRunAsync(() -> {

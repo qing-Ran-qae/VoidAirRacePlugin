@@ -2,8 +2,8 @@ package io.github.hhn756.voidairrace.core.matchrule;
 
 import io.github.hhn756.voidairrace.VoidAirRace;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
-import io.github.hhn756.voidairrace.core.result.base.ValueResult;
 import io.github.hhn756.voidairrace.infrastructure.util.ClassScanner;
+import io.github.hhn756.voidairrace.result.base.ValueResult;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
 import org.jspecify.annotations.NonNull;
