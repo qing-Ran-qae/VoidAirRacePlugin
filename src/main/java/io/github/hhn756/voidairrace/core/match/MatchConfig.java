@@ -1,10 +1,11 @@
 package io.github.hhn756.voidairrace.core.match;
 
+import io.github.hhn756.voidairrace.constants.Categories;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
 import io.github.hhn756.voidairrace.core.match.componentbase.ConfigurableComp;
 import io.github.hhn756.voidairrace.core.match.componentbase.CustomData;
-import io.github.hhn756.voidairrace.core.match.componentbase.DataKey;
 import io.github.hhn756.voidairrace.core.match.componentbase.MatchComp;
+import io.github.hhn756.voidairrace.infrastructure.registry.Registry;
 import io.github.hhn756.voidairrace.result.base.OperationResult;
 import io.github.hhn756.voidairrace.result.base.ValueResult;
 import net.kyori.adventure.text.Component;
@@ -48,8 +49,8 @@ public class MatchConfig {
         ConfigInitResult initResult = config.init(ConfigDataSource.COMMON, expectationsConfigs);
         if (!initResult.isSuccess()) {
             Component msg = initResult.getDisplayMessage() == null
-                    ? Component.translatable(TranslateKeys.Match.MatchConfig.CreateConfig.FAILURE_UNKNOWN_CAUSE)
-                    : Component.translatable(TranslateKeys.Match.MatchConfig.CreateConfig.FAILURE_SPECIFIED_CAUSE)
+                    ? Component.translatable(TranslateKeys.Match.MATCH_CONFIG_CREATE_CONFIG_FAILURE_UNKNOWN_CAUSE)
+                    : Component.translatable(TranslateKeys.Match.MATCH_CONFIG_CREATE_CONFIG_FAILURE_SPECIFIED_CAUSE)
                       .arguments(initResult.getDisplayMessage());
 
             return CreateConfigResult.failure(msg);
@@ -67,8 +68,8 @@ public class MatchConfig {
         ConfigInitResult initResult = config.init(ConfigDataSource.DEFAULT);
         if (!initResult.isSuccess()) {
             Component msg = initResult.getDisplayMessage() == null
-                    ? Component.translatable(TranslateKeys.Match.MatchConfig.CreateDefaultConfig.FAILURE_UNKNOWN_CAUSE)
-                    : Component.translatable(TranslateKeys.Match.MatchConfig.CreateDefaultConfig.FAILURE_SPECIFIED_CAUSE)
+                    ? Component.translatable(TranslateKeys.Match.MATCH_CONFIG_CREATE_DEFAULT_CONFIG_FAILURE_UNKNOWN_CAUSE)
+                    : Component.translatable(TranslateKeys.Match.MATCH_CONFIG_CREATE_DEFAULT_CONFIG_FAILURE_SPECIFIED_CAUSE)
                       .arguments(initResult.getDisplayMessage());
             return DefaultConfigResult.failure(msg);
         }
@@ -88,26 +89,29 @@ public class MatchConfig {
             @NonNull ConfigDataSource dataSource,
             CustomData... expectationsConfigs
     ) {
-        ComponentRegistry componentRegistry = ComponentRegistry.getInstance();
+        Registry registry = Registry.getInstance();
 
         // 获取要加载的所有组件
-        Collection<Class<MatchComp>> ComponentClasses = componentRegistry.getAllComponentClasses();
+//        Collection<Class<MatchComp>> ComponentClasses = componentRegistrar.getAllComponentClasses();
+        Collection<CompEntry> compEntries = registry.category(Categories.COMPONENT).list();
 
         // 加载组件本身
-        for (Class<MatchComp> componentClass : ComponentClasses) {
+        for (CompEntry compEntry : compEntries) {
             // 实例化
-            ComponentRegistry.InstantiateResult instantiateResult = componentRegistry.newComponent(componentClass);
+            CompEntry.InstantiateResult instantiateResult = compEntry.newInstance();
             MatchComp componentInstance = instantiateResult.getValue();
+
+            // 如果实例化没成功
             if (!instantiateResult.isSuccess() || componentInstance == null) {
                 Component msg = instantiateResult.getDisplayMessage() == null
-                        ? Component.translatable(TranslateKeys.Match.MatchConfig.Init.FAILURE_UNKNOWN_CAUSE)
-                        : Component.translatable(TranslateKeys.Match.MatchConfig.Init.FAILURE_SPECIFIED_CAUSE)
+                        ? Component.translatable(TranslateKeys.Match.MATCH_CONFIG_INIT_FAILURE_UNKNOWN_CAUSE)
+                        : Component.translatable(TranslateKeys.Match.MATCH_CONFIG_INIT_FAILURE_SPECIFIED_CAUSE)
                           .arguments(instantiateResult.getDisplayMessage());
                 return ConfigInitResult.failure(msg);
             }
 
             // 记录
-            components.put(componentClass, componentInstance);
+            components.put(compEntry.getCompType(), componentInstance);
         }
 
         // 加载组件的自定义配置数据
@@ -170,8 +174,8 @@ public class MatchConfig {
             configValue = customConfigResult.getValue();
             if (!customConfigResult.isSuccess() || configValue == null) {
                 Component msg = customConfigResult.getDisplayMessage() == null
-                        ? Component.translatable(TranslateKeys.Match.MatchConfig.LoadCustomConfig.FAILURE_UNKNOWN_CAUSE)
-                        : Component.translatable(TranslateKeys.Match.MatchConfig.LoadCustomConfig.FAILURE_SPECIFIED_CAUSE)
+                        ? Component.translatable(TranslateKeys.Match.MATCH_CONFIG_LOAD_CUSTOM_CONFIG_FAILURE_UNKNOWN_CAUSE)
+                        : Component.translatable(TranslateKeys.Match.MATCH_CONFIG_LOAD_CUSTOM_CONFIG_FAILURE_SPECIFIED_CAUSE)
                           .arguments(customConfigResult.getDisplayMessage());
                 return ConfigInitResult.failure(msg);
             }
@@ -180,8 +184,8 @@ public class MatchConfig {
             configValue = defaultConfigResult.getValue();
             if (!defaultConfigResult.isSuccess() || configValue == null) {
                 Component msg = defaultConfigResult.getDisplayMessage() == null
-                        ? Component.translatable(TranslateKeys.Match.MatchConfig.LoadDefaultConfig.FAILURE_UNKNOWN_CAUSE)
-                        : Component.translatable(TranslateKeys.Match.MatchConfig.LoadDefaultConfig.FAILURE_SPECIFIED_CAUSE)
+                        ? Component.translatable(TranslateKeys.Match.MATCH_CONFIG_LOAD_DEFAULT_CONFIG_FAILURE_UNKNOWN_CAUSE)
+                        : Component.translatable(TranslateKeys.Match.MATCH_CONFIG_LOAD_DEFAULT_CONFIG_FAILURE_SPECIFIED_CAUSE)
                           .arguments(defaultConfigResult.getDisplayMessage());
                 return ConfigInitResult.failure(msg);
             }
@@ -209,7 +213,6 @@ public class MatchConfig {
         return ValidationConfigResult.success();
     }
 
-    @SuppressWarnings("unchecked")
     private <C extends CustomData>
     @NonNull ValidationConfigResult validateComponent(ConfigurableComp<?, C> component) {
         // 获取该组件的实际配置数据（类型安全）

@@ -1,52 +1,26 @@
+# Gradle
 /build/
 /.gradle/
 
-# 忽略整个 .idea 目录
-.idea/
-
-# 但允许（强制添加）共享配置部分
-!.idea/misc.xml
-!.idea/modules.xml
-!.idea/compiler.xml
+# IntelliJ IDEA – 忽略整个 .idea，但强制保留共享配置
+/.idea/*
+!.idea/.gitignore
 !.idea/encodings.xml
-!.idea/runConfigurations/
-!.idea/codeStyles/
 !.idea/vcs.xml
-!.idea/copyright/
+!.idea/gradle.xml
+!.idea/misc.xml
 
-### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
+# IntelliJ 其他临时文件
 *.iws
 *.iml
 *.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 
-### Eclipse ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-### VS Code ###
+# VS Code
 .vscode/
 
-### Mac OS ###
+# Mac OS
 .DS_Store
+
+# 通用输出目录
+/out/
+/bin/

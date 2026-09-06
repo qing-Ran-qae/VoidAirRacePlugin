@@ -1,7 +1,7 @@
 package io.github.hhn756.voidairrace.service.arena;
 
 import io.github.hhn756.voidairrace.VoidAirRace;
-import io.github.hhn756.voidairrace.constants.Namespace;
+import io.github.hhn756.voidairrace.constants.Plugin;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
 import io.github.hhn756.voidairrace.exception.ArenaException;
 import io.github.hhn756.voidairrace.infrastructure.config.Config;
@@ -100,7 +100,7 @@ public class ArenaManager {
     public @NonNull BorrowArenaResult borrow() {
         Integer freeArenaId = getFreeArena();
         if (freeArenaId == -1) return BorrowArenaResult.failure(
-                Component.translatable(TranslateKeys.Arena.ArenaManager.NO_FREE_ARENA)
+                Component.translatable(TranslateKeys.Arena.ARENA_MANAGER_NO_FREE_ARENA)
         );
 
         // 更新状态
@@ -124,7 +124,7 @@ public class ArenaManager {
      * */
     public @NonNull ReturnArenaResult returnArena(@NonNull ArenaToken token) {
         if (!validateToken(token)) return ReturnArenaResult.failure(
-                Component.translatable(TranslateKeys.Arena.ArenaManager.TOKEN_IS_INVALID)
+                Component.translatable(TranslateKeys.Arena.ARENA_MANAGER_TOKEN_IS_INVALID)
         );
 
         // 卸载世界
@@ -149,14 +149,14 @@ public class ArenaManager {
      * */
     public @NonNull LoadArenaResult loadArena(ArenaToken token, String arenaPath) {
         if (!validateToken(token)) return LoadArenaResult.failure(
-                Component.translatable(TranslateKeys.Arena.ArenaManager.TOKEN_IS_INVALID)
+                Component.translatable(TranslateKeys.Arena.ARENA_MANAGER_TOKEN_IS_INVALID)
         );
 
         try {
             loadArena(token.getArenaId(), arenaPath);
         } catch (IOException e) {
             return LoadArenaResult.failure(
-                    Component.translatable(TranslateKeys.Arena.ArenaManager.IO_EXCEPTION)
+                    Component.translatable(TranslateKeys.Arena.ARENA_MANAGER_IO_EXCEPTION)
             );
         }
         return LoadArenaResult.success();
@@ -171,7 +171,7 @@ public class ArenaManager {
      * */
     public @NonNull LoadArenaResult loadArenaWorld(ArenaToken token) {
         if (!validateToken(token)) return LoadArenaResult.failure(
-                Component.translatable(TranslateKeys.Arena.ArenaManager.TOKEN_IS_INVALID)
+                Component.translatable(TranslateKeys.Arena.ARENA_MANAGER_TOKEN_IS_INVALID)
         );
 
         try {
@@ -189,7 +189,7 @@ public class ArenaManager {
      * */
     public @NonNull UnloadArenaWorldResult unloadArenaWorld(ArenaToken token) {
         if (!validateToken(token)) return UnloadArenaWorldResult.failure(
-                Component.translatable(TranslateKeys.Arena.ArenaManager.TOKEN_IS_INVALID)
+                Component.translatable(TranslateKeys.Arena.ARENA_MANAGER_TOKEN_IS_INVALID)
         );
 
         unloadArenaWorld(token.getArenaId());
@@ -202,7 +202,7 @@ public class ArenaManager {
      * */
     public @NonNull GetTokenWorldResult getTokenWorld(@NonNull ArenaToken token) {
         if (!validateToken(token)) return GetTokenWorldResult.failure(
-                Component.translatable(TranslateKeys.Arena.ArenaManager.TOKEN_IS_INVALID)
+                Component.translatable(TranslateKeys.Arena.ARENA_MANAGER_TOKEN_IS_INVALID)
         );
 
         loadArenaWorld(token.getArenaId());
@@ -324,7 +324,7 @@ public class ArenaManager {
      *根据竞技场 ID 生成世界文件夹名称
      * */
     private String arenaIdToWorldName(Integer arenaId) {
-        return Namespace.str + ".arena." + arenaId;
+        return Plugin.ns + ".arena." + arenaId;
     }
 
     /**
@@ -377,7 +377,6 @@ public class ArenaManager {
         public GetTokenWorldResult(boolean success, @Nullable World value, @Nullable Component displayMessage) {
             super(success, displayMessage, value);
         }
-
         public static GetTokenWorldResult success(World world) {
             return new GetTokenWorldResult(true, world, null);
         }

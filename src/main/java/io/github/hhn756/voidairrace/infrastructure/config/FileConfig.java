@@ -12,9 +12,9 @@ import java.io.File;
 public interface FileConfig {
 
     /**
-     * 配置文件对应的枚举对象，如 {@code game_settings}
+     * 配置文件对应的定义对象
      * */
-    @NonNull ConfigFile getSource();
+    @NonNull ConfigDefinition getDefine();
 
     /**
      * 获取配置数据
@@ -47,7 +47,7 @@ public interface FileConfig {
      * @throws ConfigException 操作过程中出现问题时抛出
      * */
     default void save() throws ConfigException {
-        saveTo(new File(getSource().fileName()), 0);
+        saveTo(new File(getDefine().filePath()), 0);
     };
 
     /**
@@ -64,7 +64,7 @@ public interface FileConfig {
      * @throws ConfigException 操作过程中出现问题时抛出
      * */
     default void saveAtomic() throws ConfigException {
-        saveAtomic(new File(getSource().fileName()));
+        saveAtomic(new File(getDefine().filePath()));
     }
 
     /**

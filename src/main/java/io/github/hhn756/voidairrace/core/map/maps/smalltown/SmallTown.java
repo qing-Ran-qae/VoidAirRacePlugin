@@ -1,8 +1,8 @@
 package io.github.hhn756.voidairrace.core.map.maps.smalltown;
 
-import io.github.hhn756.voidairrace.constants.Namespace;
+import io.github.hhn756.voidairrace.constants.Plugin;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
-import io.github.hhn756.voidairrace.core.custom.GameElementMeta;
+import io.github.hhn756.voidairrace.core.addons.GameElementMeta;
 import io.github.hhn756.voidairrace.core.map.PlayableGameMap;
 import io.github.hhn756.voidairrace.core.match.Match;
 import net.kyori.adventure.text.Component;
@@ -14,19 +14,19 @@ import org.jspecify.annotations.NonNull;
 import java.util.List;
 
 public class SmallTown extends PlayableGameMap {
-    private static final NamespacedKey MAP_ID = Namespace.of("small_town");
+    private static final NamespacedKey MAP_ID = Plugin.key("small_town");
     private static final GameElementMeta meta = new GameElementMeta(
             MAP_ID,
             List.of(
-                    Component.translatable(TranslateKeys.Map.SmallTown.NAME)
+                    Component.translatable(TranslateKeys.Map.SMALL_TOWN_NAME)
             ),
             List.of(
-                    Component.translatable(TranslateKeys.Map.SmallTown.DESCRIPTION_LINE1)
+                    Component.translatable(TranslateKeys.Map.SMALL_TOWN_DESCRIPTION_LINE1)
             ),
             List.of(
-                    Component.translatable(TranslateKeys.Map.SmallTown.AUTHOR1)
+                    Component.translatable(TranslateKeys.Map.SMALL_TOWN_AUTHOR1)
             ),
-            Component.translatable(TranslateKeys.Map.SmallTown.DISPLAY_VERSION),
+            Component.translatable(TranslateKeys.Map.SMALL_TOWN_DISPLAY_VERSION),
             1L,
             null
     );

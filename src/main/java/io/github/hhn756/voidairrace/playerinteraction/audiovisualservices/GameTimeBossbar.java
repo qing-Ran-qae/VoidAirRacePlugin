@@ -27,7 +27,7 @@ public class GameTimeBossbar implements Listener {
     public GameTimeBossbar() {
         // 初始化用于显示剩余比赛时间的bossbar
         bossbar = BossBar.bossBar(
-                Component.translatable(TranslateKeys.AudioVisualServices.GameTimeBossbar.BOSSBAR_NAME)
+                Component.translatable(TranslateKeys.AudioVisualServices.GAME_TIME_BOSSBAR_BOSSBAR_NAME)
                         .arguments(Component.text(0)),
                 1.0f,
                 BossBar.Color.BLUE,
@@ -78,7 +78,7 @@ public class GameTimeBossbar implements Listener {
     private void updateBossbar(Match match) {
         int remainingTime = match.getComp(GameTimeComp.class).getRemaining();
         bossbar.name(
-                Component.translatable(TranslateKeys.AudioVisualServices.GameTimeBossbar.BOSSBAR_NAME)
+                Component.translatable(TranslateKeys.AudioVisualServices.GAME_TIME_BOSSBAR_BOSSBAR_NAME)
                         .arguments(Component.text(remainingTime / 20))
         );
         bossbar.progress(

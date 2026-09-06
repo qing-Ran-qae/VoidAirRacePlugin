@@ -1,8 +1,8 @@
 package io.github.hhn756.voidairrace.core.matchrule.generalrules;
 
-import io.github.hhn756.voidairrace.constants.Namespace;
+import io.github.hhn756.voidairrace.constants.Plugin;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
-import io.github.hhn756.voidairrace.core.custom.GameElementMeta;
+import io.github.hhn756.voidairrace.core.addons.GameElementMeta;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.core.match.MatchCoordinator;
 import io.github.hhn756.voidairrace.core.match.basecomponents.contestant.ContestantComp;
@@ -10,6 +10,7 @@ import io.github.hhn756.voidairrace.core.match.basecomponents.gametime.GameTimeC
 import io.github.hhn756.voidairrace.core.matchrule.MatchRule;
 import io.github.hhn756.voidairrace.event.MatchStatusChangedEvent;
 import net.kyori.adventure.text.Component;
+import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.jspecify.annotations.NonNull;
@@ -22,19 +23,19 @@ import java.util.List;
  * 在比赛时间小于等于0或存活玩家不足时结束游戏
  * */
 public class BasicEndDetermination implements MatchRule, Listener {
+    public static final NamespacedKey ID = Plugin.key("basic_end_determination");
     private static final Collection<String> tags = new ArrayList<>();
-    private static final String ID = "basic_end_determination";
     private static final GameElementMeta meta = new GameElementMeta(
-            Namespace.of(ID),
+            ID,
             List.of(Component.translatable(
-                    TranslateKeys.MatchComp.BasicEndDetermination.NAME
+                    TranslateKeys.MatchRule.BASIC_END_DETERMINATION_NAME
             )),
             null,
             List.of(Component.translatable(
-                    TranslateKeys.MatchComp.BasicEndDetermination.AUTHOR
+                    TranslateKeys.MatchRule.BASIC_END_DETERMINATION_AUTHOR
             )),
             Component.translatable(
-                    TranslateKeys.MatchRule.BasicEndDetermination.DISPLAY_VERSION
+                    TranslateKeys.MatchRule.BASIC_END_DETERMINATION_DISPLAY_VERSION
             ),
             1L,
             null

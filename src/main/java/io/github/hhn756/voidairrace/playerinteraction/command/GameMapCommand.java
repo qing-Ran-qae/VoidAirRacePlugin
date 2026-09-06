@@ -6,8 +6,8 @@ import io.github.hhn756.voidairrace.constants.Categories;
 import io.github.hhn756.voidairrace.constants.PermissionNode;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
 import io.github.hhn756.voidairrace.core.map.GameMap;
+import io.github.hhn756.voidairrace.core.map.MapEntry;
 import io.github.hhn756.voidairrace.core.map.MapInitializer;
-import io.github.hhn756.voidairrace.core.map.MapMeta;
 import io.github.hhn756.voidairrace.core.map.PlayableGameMap;
 import io.github.hhn756.voidairrace.infrastructure.BootstrapModule;
 import io.github.hhn756.voidairrace.infrastructure.registry.Registry;
@@ -31,21 +31,21 @@ public class GameMapCommand implements BootstrapModule {
         context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commandsEvent -> {
             LiteralCommandNode<CommandSourceStack> node = Commands.literal("game_map")
                     .requires(ctx -> ctx.getSender().hasPermission(
-                            PermissionNode.GAME_MAP_COMMAND.getValue())
+                            PermissionNode.GAME_MAP_COMMAND.toString())
                     )
                     .then(Commands.literal("list")
                             .executes(ctx -> {
                                 CommandSender sender = ctx.getSource().getSender();
 
-                                Collection<MapMeta> maps = Registry.getInstance().list(Categories.MAP);
+                                Collection<MapEntry> maps = Registry.getInstance().category(Categories.MAP).list();
 
-                                sender.sendMessage(Component.translatable(TranslateKeys.Command.GameMapCmd.List.START));
-                                for (MapMeta mapMeta : maps) {
+                                sender.sendMessage(Component.translatable(TranslateKeys.Command.GAME_MAP_LIST_START));
+                                for (MapEntry mapMeta : maps) {
                                     GameMap mapInst = mapMeta.newInstance();
 
                                     String translateKey = (mapInst instanceof PlayableGameMap ?
-                                            TranslateKeys.Command.GameMapCmd.List.PLAYABLE_MAP_INFO
-                                            : TranslateKeys.Command.GameMapCmd.List.NOT_PLAYABLE_MAP_INFO);
+                                            TranslateKeys.Command.GAME_MAP_LIST_PLAYABLE_MAP_INFO
+                                            : TranslateKeys.Command.GAME_MAP_LIST_NOT_PLAYABLE_MAP_INFO);
 
                                     sender.sendMessage(Component.translatable(translateKey)
                                             .arguments(
@@ -54,7 +54,7 @@ public class GameMapCommand implements BootstrapModule {
                                             )
                                     );
                                 }
-                                sender.sendMessage(Component.translatable(TranslateKeys.Command.GameMapCmd.List.END));
+                                sender.sendMessage(Component.translatable(TranslateKeys.Command.GAME_MAP_LIST_END));
                                 return 1;
                             })
                     ).then(Commands.literal("reinit")
@@ -67,28 +67,28 @@ public class GameMapCommand implements BootstrapModule {
                                         if (targetMapId == null) {
                                             sender.sendMessage(
                                                     Component.translatable(
-                                                            TranslateKeys.Command.GameMapCmd.Reinit.ID_FORMAT_ERROR
+                                                            TranslateKeys.Command.GAME_MAP_REINIT_ID_FORMAT_ERROR
                                                     )
                                             );
                                             return 1;
                                         }
 
-                                        MapMeta mapMeta = Registry.getInstance().get(Categories.MAP, targetMapId);
-                                        if (mapMeta == null) {
+                                        MapEntry mapEntry = Registry.getInstance().category(Categories.MAP).get(targetMapId);
+                                        if (mapEntry == null) {
                                             sender.sendMessage(
                                                     Component.translatable(
-                                                            TranslateKeys.Command.GameMapCmd.Reinit.MAP_NOT_FOUND
+                                                            TranslateKeys.Command.GAME_MAP_REINIT_MAP_NOT_FOUND
                                                     )
                                             );
                                             return 1;
                                         }
                                         sender.sendMessage(
-                                                Component.translatable(TranslateKeys.Command.GameMapCmd.Reinit.STARTED)
+                                                Component.translatable(TranslateKeys.Command.GAME_MAP_REINIT_STARTED)
                                         );
                                         MapInitializer.getInstance().reinitMap(targetMapId).thenRunAsync(
                                                 () -> sender.sendMessage(
-                                                        Component.translatable(TranslateKeys.Command.GameMapCmd.Reinit.OK)
-                                                                .arguments(mapMeta.getElementMeta().mainName())
+                                                        Component.translatable(TranslateKeys.Command.GAME_MAP_REINIT_OK)
+                                                                .arguments(mapEntry.getElementMeta().mainName())
                                                 ),
                                                 SchedulingUtil::runOnMainThread
                                         );

@@ -1,6 +1,6 @@
 name: VoidAirRace
 description: VoidAirRace Minigame
-version: '0.1'
+version: '0.1.0'
 author: hhn756
 main: io.github.hhn756.voidairrace.VoidAirRace
 api-version: '1.21.11'

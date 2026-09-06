@@ -2,9 +2,13 @@ package io.github.hhn756.voidairrace.core.match.basecomponents.contestant;
 
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
 import io.github.hhn756.voidairrace.core.match.ComponentPriority;
+import io.github.hhn756.voidairrace.core.match.DataKey;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.core.match.MatchConfig;
-import io.github.hhn756.voidairrace.core.match.componentbase.*;
+import io.github.hhn756.voidairrace.core.match.componentbase.ConfigurableComp;
+import io.github.hhn756.voidairrace.core.match.componentbase.CustomData;
+import io.github.hhn756.voidairrace.core.match.componentbase.MatchComp;
+import io.github.hhn756.voidairrace.core.match.componentbase.StartableComp;
 import io.github.hhn756.voidairrace.core.team.TeamRoster;
 import io.github.hhn756.voidairrace.event.MatchStatusChangedEvent;
 import io.github.hhn756.voidairrace.event.PlayerJoinMatchEvent;
@@ -88,7 +92,7 @@ public class ContestantComp extends MatchComp
         this.match = match;
         ContestantConfig config = match.getConfig().getData(ContestantComp.CONFIG_KEY);
         if (config == null) {
-            return new InstallResult<>(false, Component.translatable(TranslateKeys.BaseComponents.ContestantComp.NO_CONFIG), null);
+            return new InstallResult<>(false, Component.translatable(TranslateKeys.BaseComponents.CONTESTANT_COMP_NO_CONFIG), null);
         }
 
         // 初始化存活玩家和队伍计数

@@ -1,6 +1,6 @@
 package io.github.hhn756.voidairrace.event;
 
-import io.github.hhn756.voidairrace.infrastructure.config.ConfigFile;
+import io.github.hhn756.voidairrace.infrastructure.config.ConfigDefinition;
 import io.github.hhn756.voidairrace.infrastructure.config.ConfigKey;
 import io.github.hhn756.voidairrace.infrastructure.util.TypeUtil;
 import org.bukkit.event.Event;
@@ -31,7 +31,7 @@ public class ConfigFieldChangeEvent extends Event {
     }
 
     /** 发生变更的配置文件 */
-    private final @NonNull ConfigFile file;
+    private final @NonNull ConfigDefinition file;
 
     /**
      * 发生变更的路径<br>
@@ -59,7 +59,7 @@ public class ConfigFieldChangeEvent extends Event {
      * @param newValue 新值
      */
     public ConfigFieldChangeEvent(
-            @NonNull  ConfigFile   file,
+            @NonNull ConfigDefinition file,
             @NonNull  String       path,
             @Nullable Object       oldValue,
             @Nullable Object       newValue
@@ -75,7 +75,7 @@ public class ConfigFieldChangeEvent extends Event {
      *
      * @return 代表配置文件的对象
      */
-    public @NonNull ConfigFile getFile() {
+    public @NonNull ConfigDefinition getFile() {
         return file;
     }
 

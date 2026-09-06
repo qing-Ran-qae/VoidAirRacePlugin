@@ -14,7 +14,7 @@ public class EventListener implements Listener {
 
     @EventHandler
     public void onPluginEnable(PluginEnableEvent event) {
-        ComponentRegistry.load();
+        ComponentRegistrar.load();
         MatchCoordinator.load();
 
         checkMatchAbort();

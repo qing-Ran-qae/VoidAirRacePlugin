@@ -1,9 +1,9 @@
 package io.github.hhn756.voidairrace.core.matchrule;
 
-import io.github.hhn756.voidairrace.constants.Namespace;
+import io.github.hhn756.voidairrace.constants.Plugin;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
-import io.github.hhn756.voidairrace.core.custom.GameElement;
-import io.github.hhn756.voidairrace.core.custom.GameElementMeta;
+import io.github.hhn756.voidairrace.core.addons.GameElement;
+import io.github.hhn756.voidairrace.core.addons.GameElementMeta;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.result.base.OperationResult;
 import net.kyori.adventure.text.Component;
@@ -18,12 +18,17 @@ public interface MatchRule extends GameElement {
      * 规则类游戏元素的默认元数据
      * */
     GameElementMeta defaultMeta = new GameElementMeta(
-            Namespace.of("default"),
+            Plugin.key("default"),
             List.of(Component.translatable(
-                    TranslateKeys.MatchComp.CompBase.DEFAULT_NAME
+                    TranslateKeys.MatchComp.COMP_BASE_DEFAULT_NAME
             )),
             null, null, null, null, null
     );
+
+    @Override
+    default @NonNull GameElementMeta getElementMeta() {
+        return defaultMeta;
+    };
 
     /**
      * 获取规则的所有标签
@@ -47,7 +52,7 @@ public interface MatchRule extends GameElement {
     default void onDisable(@NonNull Match match) {}
 
     /**
-     * 规则加载时每游戏刻自动执行一次（注意：避免耗时操作）
+     * 规则加载时每游戏刻自动执行一次（注意：避免包含耗时操作）
      */
     default void tick(@NonNull Match match) {}
 

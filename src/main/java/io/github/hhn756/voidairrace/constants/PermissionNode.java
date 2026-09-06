@@ -25,7 +25,8 @@ public enum PermissionNode {
     /**
      * 获取字符串形式的权限节点名
      * */
-    public String getValue() {
+    @Override
+    public String toString() {
         return value;
     }
 }

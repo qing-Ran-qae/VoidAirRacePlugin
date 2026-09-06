@@ -38,6 +38,7 @@ public class ClassScanner {
      * @param <T>         泛型类型
      * @return 符合条件的子类列表（不包含 type 本身）
      */
+    @SuppressWarnings("unchecked")
     public static <T> Collection<Class<T>> scanSubclasses(Class<T> type, String basePackage) {
         VoidAirRace mainClass = VoidAirRace.getInstance();
 
@@ -140,6 +141,7 @@ public class ClassScanner {
      * @see java.net.URL
      * @see java.util.jar.JarFile
      */
+    @SuppressWarnings("unchecked")
     public static <T> Collection<Class<T>> scanSubclasses(ClassLoader classLoader, URL codeSourceUrl, Class<T> type, String basePackage) {
         List<String> classNames = new ArrayList<>();
         try {

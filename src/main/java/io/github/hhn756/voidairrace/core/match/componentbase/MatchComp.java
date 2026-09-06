@@ -2,9 +2,9 @@ package io.github.hhn756.voidairrace.core.match.componentbase;
 
 import io.github.hhn756.voidairrace.VoidAirRace;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
-import io.github.hhn756.voidairrace.core.custom.GameElementMeta;
+import io.github.hhn756.voidairrace.core.addons.GameElementMeta;
 import io.github.hhn756.voidairrace.infrastructure.config.Config;
-import io.github.hhn756.voidairrace.infrastructure.config.ConfigFile;
+import io.github.hhn756.voidairrace.infrastructure.config.ConfigDefinition;
 import io.github.hhn756.voidairrace.infrastructure.config.YamlConfig;
 import net.kyori.adventure.text.Component;
 import org.bukkit.NamespacedKey;
@@ -22,7 +22,7 @@ import java.util.List;
 public class MatchComp {
     private static final @NonNull GameElementMeta defaultMeta = new GameElementMeta(
             new NamespacedKey(VoidAirRace.getInstance(), "default_component"),
-            List.of(Component.translatable(TranslateKeys.MatchComp.CompBase.DEFAULT_NAME)),
+            List.of(Component.translatable(TranslateKeys.MatchComp.COMP_BASE_DEFAULT_NAME)),
             null, null, null, null, null
     );
 
@@ -38,9 +38,9 @@ public class MatchComp {
      *
      * @param file 目标文件
      *
-     * @see Config#getYmlConfig(ConfigFile)
+     * @see Config#getYmlConfig(ConfigDefinition)
      * */
-    public @NonNull YamlConfig getYmlConfig(@NonNull ConfigFile file) {
+    public @NonNull YamlConfig getYmlConfig(@NonNull ConfigDefinition file) {
         return Config.getInstance().getYmlConfig(file);
     }
 }

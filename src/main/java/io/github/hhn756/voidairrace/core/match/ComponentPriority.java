@@ -38,7 +38,7 @@ public enum ComponentPriority {
     }
 
     /**
-     * 获取整数形式的优先级值
+     * @return 整数形式的优先级值
      * */
     public @Range(from = 0, to = Integer.MAX_VALUE) int getValue() {
         return value;

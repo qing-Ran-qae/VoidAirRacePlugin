@@ -1,6 +1,6 @@
 package io.github.hhn756.voidairrace.core.map.maps.lobby;
 
-import io.github.hhn756.voidairrace.constants.Namespace;
+import io.github.hhn756.voidairrace.constants.Plugin;
 import io.github.hhn756.voidairrace.core.team.Teams;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -10,7 +10,7 @@ import org.bukkit.util.BoundingBox;
 import java.util.HashMap;
 
 class Data {
-    static final NamespacedKey MAP_ID = Namespace.of("lobby");
+    static final NamespacedKey MAP_ID = Plugin.key("lobby");
     static final World mapWorld = Bukkit.getWorld("world");
 
     static final HashMap<BoundingBox, TeamArea> regionToTeam = new HashMap<BoundingBox, TeamArea>();

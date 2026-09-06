@@ -1,6 +1,6 @@
 package io.github.hhn756.voidairrace.service.datapackregistrar;
 
-import io.github.hhn756.voidairrace.constants.Namespace;
+import io.github.hhn756.voidairrace.constants.Plugin;
 import io.github.hhn756.voidairrace.constants.ResourcePath;
 import io.github.hhn756.voidairrace.infrastructure.BootstrapModule;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
@@ -25,9 +25,9 @@ public class DataPackRegistrar implements BootstrapModule {
                     try {
                         event.registrar().discoverPack(
                                 getClass().getResource(
-                                        ResourcePath.DATAPACK.getPath()  // 数据包目录路径
+                                        ResourcePath.DATAPACK.toString()  // 数据包目录路径
                                 ).toURI(),
-                                Namespace.str
+                                Plugin.ns
                         );
                     } catch (IOException | URISyntaxException | NullPointerException e) {
                         context.getLogger().warn(

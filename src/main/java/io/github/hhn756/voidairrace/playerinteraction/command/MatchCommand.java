@@ -3,16 +3,17 @@ package io.github.hhn756.voidairrace.playerinteraction.command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.github.hhn756.voidairrace.constants.Categories;
-import io.github.hhn756.voidairrace.constants.Namespace;
 import io.github.hhn756.voidairrace.constants.PermissionNode;
+import io.github.hhn756.voidairrace.constants.Plugin;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
-import io.github.hhn756.voidairrace.core.map.MapMeta;
+import io.github.hhn756.voidairrace.core.map.MapEntry;
 import io.github.hhn756.voidairrace.core.match.MatchCoordinator;
 import io.github.hhn756.voidairrace.infrastructure.BootstrapModule;
 import io.github.hhn756.voidairrace.infrastructure.config.Config;
 import io.github.hhn756.voidairrace.infrastructure.config.files.GameSettingKeys;
 import io.github.hhn756.voidairrace.infrastructure.config.files.PublicFiles;
 import io.github.hhn756.voidairrace.infrastructure.listenerregistrar.AutoRegistration;
+import io.github.hhn756.voidairrace.infrastructure.registry.DefaultSubtable;
 import io.github.hhn756.voidairrace.infrastructure.registry.Registry;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -33,7 +34,7 @@ public class MatchCommand implements BootstrapModule {
         context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commandsEvent -> {
             LiteralCommandNode<CommandSourceStack> node = Commands.literal("match")
                     .requires(
-                            ctx -> ctx.getSender().hasPermission(PermissionNode.MATCH_COMMAND.getValue())
+                            ctx -> ctx.getSender().hasPermission(PermissionNode.MATCH_COMMAND.toString())
                     )
                     .then(Commands.literal("start")
                             .executes(ctx -> {
@@ -54,13 +55,13 @@ public class MatchCommand implements BootstrapModule {
                                 if (!stopResult.isSuccess()) {
                                     Component message = stopResult.getDisplayMessage();
                                     if (message == null) message = Component.translatable(
-                                            TranslateKeys.Command.MatchCmd.Stop.FAILURE
+                                            TranslateKeys.Command.MATCH_CMD_STOP_FAILURE
                                     );
                                     sender.sendMessage(message.color(NamedTextColor.RED));
                                     return 1;
                                 }
 
-                                sender.sendMessage(Component.translatable(TranslateKeys.Command.MatchCmd.Stop.SUCCESS));
+                                sender.sendMessage(Component.translatable(TranslateKeys.Command.MATCH_CMD_STOP_SUCCESS));
                                 return 1;
                             })
                     ).then(Commands.literal("set_map")
@@ -70,25 +71,26 @@ public class MatchCommand implements BootstrapModule {
                                         String rawMapId = ctx.getArgument("map_id", String.class);
                                         NamespacedKey formatedMapId = NamespacedKey.fromString(rawMapId);
                                         Registry registry = Registry.getInstance();
+                                        DefaultSubtable<MapEntry, NamespacedKey> mapSubtable = registry.category(Categories.MAP);
 
                                         // 如果输入格式错误
                                         if (formatedMapId == null) {
                                             sender.sendMessage(
-                                                    Component.translatable(TranslateKeys.Command.MatchCmd.SetMap.ID_FORMAT_ERROR)
+                                                    Component.translatable(TranslateKeys.Command.MATCH_CMD_SET_MAP_ID_FORMAT_ERROR)
                                                             .color(NamedTextColor.RED));
                                             return 1;
                                         }
 
                                         // 默认使用本插件的命名空间
                                         if (!rawMapId.contains(":")) {
-                                            formatedMapId = new NamespacedKey(Namespace.str, formatedMapId.getKey());
+                                            formatedMapId = new NamespacedKey(Plugin.ns, formatedMapId.getKey());
                                         }
 
                                         // 检查地图是否存在
-                                        MapMeta mapMeta = registry.get(Categories.MAP, formatedMapId);
-                                        if (mapMeta == null) {
+                                        MapEntry mapEntry = mapSubtable.get(formatedMapId);
+                                        if (mapEntry == null) {
                                             sender.sendMessage(
-                                                    Component.translatable(TranslateKeys.Command.MatchCmd.SetMap.MAP_NOTFOUND)
+                                                    Component.translatable(TranslateKeys.Command.MATCH_CMD_SET_MAP_MAP_NOTFOUND)
                                                             .arguments(Component.text(formatedMapId.toString()))
                                                             .color(NamedTextColor.RED)
                                             );
@@ -96,9 +98,9 @@ public class MatchCommand implements BootstrapModule {
                                         }
 
                                         // 检查地图是否可玩
-                                        if (!mapMeta.isPlayable()) {
+                                        if (!mapEntry.isPlayable()) {
                                             sender.sendMessage(
-                                                    Component.translatable(TranslateKeys.Command.MatchCmd.SetMap.MAP_NOT_PLAYABLE)
+                                                    Component.translatable(TranslateKeys.Command.MATCH_CMD_SET_MAP_MAP_NOT_PLAYABLE)
                                                             .arguments(Component.text(rawMapId))
                                                             .color(NamedTextColor.RED)
                                             );
@@ -112,10 +114,10 @@ public class MatchCommand implements BootstrapModule {
 
                                         // 提示
                                         sender.sendMessage(
-                                                Component.translatable(TranslateKeys.Command.MatchCmd.SetMap.SUCCESS)
+                                                Component.translatable(TranslateKeys.Command.MATCH_CMD_SET_MAP_SUCCESS)
                                                         .arguments(
                                                                 Component.text(formatedMapId.toString()),   // 地图 id
-                                                                mapMeta.getElementMeta().mainName()         // 地图显示名
+                                                                mapEntry.getElementMeta().mainName()         // 地图显示名
                                                         )
                                         );
                                         return 1;
@@ -131,18 +133,18 @@ public class MatchCommand implements BootstrapModule {
                                                 .get(GameSettingKeys.SELECTED_MAP_ID, null)
                                 );
 
-                                MapMeta mapMeta = Registry.getInstance().get(Categories.MAP, selectedMapId);
+                                MapEntry mapEntry = Registry.getInstance().category(Categories.MAP).get(selectedMapId);
                                 sender.sendMessage(
-                                        Component.translatable(TranslateKeys.Command.MatchCmd.GetMap.SUCCESS)
+                                        Component.translatable(TranslateKeys.Command.MATCH_CMD_GET_MAP_SUCCESS)
                                                 .arguments(
                                                         Component.text(selectedMapId == null
                                                                 ? "null"
                                                                 : selectedMapId.toString()
                                                         ),
-                                                        mapMeta == null
+                                                        mapEntry == null
                                                             ? Component.translatable(
-                                                                    TranslateKeys.Command.MatchCmd.GetMap.DEFAULT_MAP_NAME)
-                                                            : mapMeta.getElementMeta().mainName()
+                                                                    TranslateKeys.Command.MATCH_CMD_GET_MAP_DEFAULT_MAP_NAME)
+                                                            : mapEntry.getElementMeta().mainName()
                                                 )
                                 );
                                 return 1;

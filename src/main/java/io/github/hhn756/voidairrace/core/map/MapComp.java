@@ -5,6 +5,7 @@ import io.github.hhn756.voidairrace.constants.Categories;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
 import io.github.hhn756.voidairrace.core.map.maps.grassland.GrassLand;
 import io.github.hhn756.voidairrace.core.match.ComponentPriority;
+import io.github.hhn756.voidairrace.core.match.DataKey;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.core.match.componentbase.*;
 import io.github.hhn756.voidairrace.infrastructure.config.Config;
@@ -48,27 +49,27 @@ public class MapComp extends MatchComp
                     null
             );
         }
-        MapMeta mapMeta = Registry.getInstance().get(Categories.MAP, expected.expectedMapId());
+        MapEntry mapEntry = Registry.getInstance().category(Categories.MAP).get(expected.expectedMapId());
 
         // 检查 变量是否为null 和 地图是否存在
-        if (mapMeta == null) {
+        if (mapEntry == null) {
             return new CustomConfigResult<>(
                     false,
                     null,
-                    Component.translatable(TranslateKeys.Map.CreateDefaultConfig.MAP_NOTFOUND)
+                    Component.translatable(TranslateKeys.Map.CREATE_DEFAULT_CONFIG_MAP_NOTFOUND)
             );
         }
 
         // 检查地图是否可玩
-        if (!mapMeta.isPlayable()) {
+        if (!mapEntry.isPlayable()) {
             return new CustomConfigResult<>(
                     false,
                     null,
-                    Component.translatable(TranslateKeys.Map.CreateCustomConfig.MAP_NOT_PLAYABLE)
+                    Component.translatable(TranslateKeys.Map.CREATE_CUSTOM_CONFIG_MAP_NOT_PLAYABLE)
             );
         }
 
-        return CustomConfigResult.success(new MapConfig((PlayableGameMap) mapMeta.newInstance()));
+        return CustomConfigResult.success(new MapConfig((PlayableGameMap) mapEntry.newInstance()));
     }
 
     @Override
@@ -78,12 +79,12 @@ public class MapComp extends MatchComp
                         .getYmlConfig(PublicFiles.GAME_SETTINGS)
                         .get(GameSettingKeys.SELECTED_MAP_ID, GrassLand.getID().toString())
         );
-        GameMap map = Registry.getInstance().get(Categories.MAP, selectedMapId).newInstance();
+        GameMap map = Registry.getInstance().category(Categories.MAP).get(selectedMapId).newInstance();
         if (!(map instanceof PlayableGameMap playableMap)) {
             return new DefaultConfigResult<>(
                     false,
                     null,
-                    Component.translatable(TranslateKeys.Map.CreateDefaultConfig.MAP_NOT_PLAYABLE)
+                    Component.translatable(TranslateKeys.Map.CREATE_DEFAULT_CONFIG_MAP_NOT_PLAYABLE)
             );
         }
         return DefaultConfigResult.success(new MapConfig(playableMap));
@@ -119,7 +120,7 @@ public class MapComp extends MatchComp
         PlayableGameMap.StartResult startResult = gameMap.start(match);
         if (!startResult.isSuccess()) {
             Component msg = startResult.getDisplayMessage() == null
-                    ? Component.translatable(TranslateKeys.Map.MapComponent.SELECTED_START_FAILED)
+                    ? Component.translatable(TranslateKeys.Map.MAP_COMPONENT_SELECTED_START_FAILED)
                     : startResult.getDisplayMessage();
             return new InstallResult<>(false, msg, null);
         }

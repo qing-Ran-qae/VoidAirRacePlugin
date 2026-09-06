@@ -1,9 +1,9 @@
-package io.github.hhn756.voidairrace.core.custom;
+package io.github.hhn756.voidairrace.core.addons;
 
 import org.jspecify.annotations.NonNull;
 
 /**
- * 代表一个游戏元素
+ * ...
  * */
 public interface GameElement {
     /**

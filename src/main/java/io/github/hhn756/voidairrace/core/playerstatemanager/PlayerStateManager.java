@@ -1,7 +1,7 @@
 package io.github.hhn756.voidairrace.core.playerstatemanager;
 
-import io.github.hhn756.voidairrace.constants.Namespace;
 import io.github.hhn756.voidairrace.constants.PlayerPDCKey;
+import io.github.hhn756.voidairrace.constants.Plugin;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -72,7 +72,7 @@ public class PlayerStateManager {
 
         // 获取状态
         String currentState = statesContainer.get(
-                new NamespacedKey(Namespace.str, system),
+                new NamespacedKey(Plugin.ns, system),
                 PersistentDataType.STRING
         );
         return currentState == null ? null : new NamespacedKey(system, currentState);
@@ -90,7 +90,7 @@ public class PlayerStateManager {
 
         // 设置新状态
         statesPDC.set(
-                new NamespacedKey(Namespace.str, newState.getNamespace()),
+                new NamespacedKey(Plugin.ns, newState.getNamespace()),
                 PersistentDataType.STRING,
                 newState.getKey()
         );

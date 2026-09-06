@@ -5,6 +5,7 @@ import io.github.hhn756.voidairrace.infrastructure.config.Config;
 import io.github.hhn756.voidairrace.infrastructure.listenerregistrar.ListenerRegistrar;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.logging.Logger;
 
@@ -44,7 +45,7 @@ public class VoidAirRace extends JavaPlugin {
     /**
      * 插件本次启用中的主类实例
      * */
-    private static VoidAirRace instance;
+    private static @Nullable VoidAirRace instance;
 
     /**
      * 用于获取插件主类实例，方便访问公共资源

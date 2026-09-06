@@ -1,7 +1,7 @@
 package io.github.hhn756.voidairrace.core.map.maps.lobby;
 
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
-import io.github.hhn756.voidairrace.core.custom.GameElementMeta;
+import io.github.hhn756.voidairrace.core.addons.GameElementMeta;
 import io.github.hhn756.voidairrace.core.map.GameMap;
 import net.kyori.adventure.text.Component;
 import org.bukkit.event.Listener;
@@ -16,15 +16,15 @@ public class Lobby extends GameMap implements Listener {
     private static final GameElementMeta meta = new GameElementMeta(
             Data.MAP_ID,
             List.of(
-                    Component.translatable(TranslateKeys.Map.Lobby.NAME)
+                    Component.translatable(TranslateKeys.Map.LOBBY_NAME)
             ),
             List.of(
-                    Component.translatable(TranslateKeys.Map.Lobby.DESCRIPTION_LINE1)
+                    Component.translatable(TranslateKeys.Map.LOBBY_DESCRIPTION_LINE1)
             ),
             List.of(
-                    Component.translatable(TranslateKeys.Map.Lobby.AUTHOR1)
+                    Component.translatable(TranslateKeys.Map.LOBBY_AUTHOR1)
             ),
-            Component.translatable(TranslateKeys.Map.Lobby.DISPLAY_VERSION),
+            Component.translatable(TranslateKeys.Map.LOBBY_DISPLAY_VERSION),
             1L,
             null
     );

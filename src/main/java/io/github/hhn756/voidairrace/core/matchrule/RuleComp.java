@@ -1,10 +1,18 @@
 package io.github.hhn756.voidairrace.core.matchrule;
 
 import io.github.hhn756.voidairrace.VoidAirRace;
+import io.github.hhn756.voidairrace.constants.Categories;
+import io.github.hhn756.voidairrace.constants.Plugin;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
+import io.github.hhn756.voidairrace.core.addons.GameElementMeta;
 import io.github.hhn756.voidairrace.core.match.ComponentPriority;
+import io.github.hhn756.voidairrace.core.match.DataKey;
 import io.github.hhn756.voidairrace.core.match.Match;
-import io.github.hhn756.voidairrace.core.match.componentbase.*;
+import io.github.hhn756.voidairrace.core.match.componentbase.CustomData;
+import io.github.hhn756.voidairrace.core.match.componentbase.EndableComp;
+import io.github.hhn756.voidairrace.core.match.componentbase.MatchComp;
+import io.github.hhn756.voidairrace.core.match.componentbase.StartableComp;
+import io.github.hhn756.voidairrace.infrastructure.registry.Registry;
 import io.github.hhn756.voidairrace.result.base.OperationResult;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -21,10 +29,17 @@ public class RuleComp extends MatchComp
         implements StartableComp<CustomData, CustomData>,
         EndableComp<CustomData, CustomData> {
 
+    private static final GameElementMeta meta = GameElementMeta.onlyId(Plugin.key("rule_comp"));
+
     private Match match;
     private BukkitTask tickTask;
     private final Set<MatchRule> activeRules = new HashSet<>();
     private final Map<MatchRule, Listener> ruleListeners = new HashMap<>();
+
+    @Override
+    public @NonNull GameElementMeta getMeta() {
+        return meta;
+    }
 
     @Override
     public @NonNull DataKey<?> getSCK() {
@@ -74,13 +89,14 @@ public class RuleComp extends MatchComp
      *
      * @return 启用结果
      */
-    public ManagerEnableRuleResult enableRule(NamespacedKey ruleId) {
-        RuleRegistry.CreateRuleResult createResult = RuleRegistry.getInstance().createRule(ruleId);
-        if (!createResult.isSuccess()) {
-            return new ManagerEnableRuleResult(false, createResult.getDisplayMessage());
+    public @NonNull ManagerEnableRuleResult enableRule(@NonNull NamespacedKey ruleId) {
+        RuleEntry<?> getResult = Registry.getInstance().category(Categories.RULE).get(ruleId);
+        if (getResult == null) {
+            return new ManagerEnableRuleResult(false, Component.translatable(
+                    TranslateKeys.MatchComp.RULE_COMP_ENABLE_RULE_FAILURE_NOT_FOUND_ID
+            ));
         }
-        MatchRule rule = createResult.getValue();
-        return enableRule(rule);
+        return enableRule(getResult.newInstance());
     }
 
     /**
@@ -89,9 +105,9 @@ public class RuleComp extends MatchComp
      *
      * @param rule 指定规则
      */
-    private ManagerEnableRuleResult enableRule(MatchRule rule) {
+    private @NonNull ManagerEnableRuleResult enableRule(@NonNull MatchRule rule) {
         if (activeRules.contains(rule)) {
-            return new ManagerEnableRuleResult(false, Component.translatable(TranslateKeys.Rule.RuleComp.ALREADY_ENABLED));
+            return new ManagerEnableRuleResult(false, Component.translatable(TranslateKeys.MatchComp.RULE_COMP_ALREADY_ENABLED));
         }
         MatchRule.RuleEnableResult enableResult = rule.onEnable(match);
         if (!enableResult.isSuccess()) {
@@ -118,7 +134,7 @@ public class RuleComp extends MatchComp
      *
      * @param rule 指定规则实例
      */
-    private void disableRule(MatchRule rule) {
+    private void disableRule(@NonNull MatchRule rule) {
         if (!activeRules.contains(rule)) return;
         rule.onDisable(match);
         if (ruleListeners.containsKey(rule)) {

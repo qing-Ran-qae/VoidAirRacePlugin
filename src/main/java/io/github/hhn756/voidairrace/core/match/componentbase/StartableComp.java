@@ -1,6 +1,7 @@
 package io.github.hhn756.voidairrace.core.match.componentbase;
 
 import io.github.hhn756.voidairrace.core.match.ComponentPriority;
+import io.github.hhn756.voidairrace.core.match.DataKey;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.result.base.ValueResult;
 import net.kyori.adventure.text.Component;

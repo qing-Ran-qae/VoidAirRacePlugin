@@ -1,9 +1,8 @@
 package io.github.hhn756.voidairrace.core.map;
 
-import io.github.hhn756.voidairrace.core.custom.GameElement;
-import io.github.hhn756.voidairrace.core.custom.GameElementMeta;
+import io.github.hhn756.voidairrace.core.addons.GameElement;
+import io.github.hhn756.voidairrace.core.addons.GameElementMeta;
 import io.github.hhn756.voidairrace.exception.RegistryException;
-import io.github.hhn756.voidairrace.infrastructure.registry.Entry;
 import org.bukkit.NamespacedKey;
 import org.jetbrains.annotations.Range;
 import org.jspecify.annotations.NonNull;
@@ -11,12 +10,15 @@ import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 
-public class MapMeta implements Entry<NamespacedKey>, GameElement {
+/**
+ * 用于在注册表中记录一个地图
+ * */
+public class MapEntry implements GameElement {
     /** 地图的元数据 */
     private final GameElementMeta elementMeta;
     /** 地图类型对象的构造器 */
     private final Constructor<? extends GameMap> mapConstructor;
-    /** 地图是否可玩 */
+    /** 地图是否可游玩（被比赛使用） */
     private final boolean playable;
     /** 最大参赛队伍数量 */
     private final Integer maxTeams;
@@ -30,7 +32,7 @@ public class MapMeta implements Entry<NamespacedKey>, GameElement {
      *
      * @throws RegistryException 如果{@code playable}的值和{@code mapConstructor}所构造的对象类型不匹配
      * */
-    public MapMeta(
+    public MapEntry(
             @NonNull GameElementMeta elementMeta,
             @NonNull Constructor<? extends GameMap> mapConstructor,
             boolean playable,
@@ -50,7 +52,6 @@ public class MapMeta implements Entry<NamespacedKey>, GameElement {
         this.maxTeams = maxTeams;
     }
 
-    @Override
     public @NonNull NamespacedKey getKey() {
         return elementMeta.id();
     }
@@ -63,7 +64,7 @@ public class MapMeta implements Entry<NamespacedKey>, GameElement {
     /**
      * 获取此地图的新实例
      *
-     * @return 此地图的新实例，{@link MapMeta#isPlayable()}为{@code true}时将返回{@link PlayableGameMap}，否则返回{@link GameMap}
+     * @return 此地图的新实例，{@link MapEntry#isPlayable()}为{@code true}时将返回{@link PlayableGameMap}，否则返回{@link GameMap}
      *
      * @throws RegistryException 如果构造器抛出了异常
      * */

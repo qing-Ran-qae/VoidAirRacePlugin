@@ -1,7 +1,7 @@
 package io.github.hhn756.voidairrace.core.map;
 
-import io.github.hhn756.voidairrace.constants.Namespace;
-import io.github.hhn756.voidairrace.core.custom.GameElement;
+import io.github.hhn756.voidairrace.constants.Plugin;
+import io.github.hhn756.voidairrace.core.addons.GameElement;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NonNull;
@@ -11,14 +11,14 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * 游戏地图的基类<br>
- * 用于获取地图基本信息和控制地图初始化
+ * 定义了获取地图基本信息和控制地图初始化的方法
  * */
 public abstract class GameMap implements GameElement {
     /**
      * 子类未指定其ID时方法所用的默认地图ID<br>
      * 系统保留此ID，不可被任何地图使用
      * */
-    public static final NamespacedKey DEFAULT_MAP_ID = Namespace.of("game_map_default_id");
+    public static final NamespacedKey DEFAULT_MAP_ID = Plugin.key("game_map_default_id");
 
     /**
      * 插件首次启用或执行重新初始化命令时执行<br>
@@ -31,10 +31,12 @@ public abstract class GameMap implements GameElement {
     }
 
     /**
-     * 在重新初始化时执行一次，用于回到初始化前的状态<br>
+     * 用于回到初始化前的状态<br>
+     * <br>
+     * 重新初始化地图时，会先执行此方法然后执行{@link GameMap#initAsync(JavaPlugin)}<br>
      * 注：需通过{@link MapInitializer#reinitMap(NamespacedKey)}重初始化，否则此方法不会被自动调用
      * */
-    public void unInit() {}
+    void unInit() {}
 
     /**
      * 检查地图的初始化状态

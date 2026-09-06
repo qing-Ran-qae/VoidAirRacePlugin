@@ -61,7 +61,7 @@ public class MatchCoordinator {
     public StartResult startMatch(@Nullable MatchConfig matchConfig) {
         if (matchIsRunning()) {
             return StartResult.failure(Component.translatable(
-                    TranslateKeys.Match.MatchCoordinator.StartMatch.REPEAT_START
+                    TranslateKeys.Match.MATCH_COORDINATOR_START_MATCH_REPEAT_START
             ));
         }
 
@@ -75,8 +75,8 @@ public class MatchCoordinator {
             if (!defaultConfigResult.isSuccess() || matchConfig == null) {
                 return StartResult.failure(
                         defaultConfigResult.getDisplayMessage() == null
-                                ? Component.translatable(TranslateKeys.Match.Start.START_FAILED_UNKNOWN_REASONS)
-                                : Component.translatable(TranslateKeys.Match.Start.START_FAILED_SPECIFIED_REASONS)
+                                ? Component.translatable(TranslateKeys.Match.START_START_FAILED_UNKNOWN_REASONS)
+                                : Component.translatable(TranslateKeys.Match.START_START_FAILED_SPECIFIED_REASONS)
                                   .arguments(defaultConfigResult.getDisplayMessage())
                 );
             }
@@ -87,9 +87,9 @@ public class MatchCoordinator {
         Match match = createMatchResult.getValue();
         if (!createMatchResult.isSuccess() || match == null) {
             Component msg = createMatchResult.getDisplayMessage() == null
-                    ? Component.translatable(TranslateKeys.Match.Start.START_FAILED_UNKNOWN_REASONS)
+                    ? Component.translatable(TranslateKeys.Match.START_START_FAILED_UNKNOWN_REASONS)
                     : Component.translatable(
-                    TranslateKeys.Match.Start.START_FAILED_SPECIFIED_REASONS)
+                    TranslateKeys.Match.START_START_FAILED_SPECIFIED_REASONS)
                       .arguments(createMatchResult.getDisplayMessage());
             return StartResult.failure(msg);
         }
@@ -99,8 +99,8 @@ public class MatchCoordinator {
         Match.StartResult startMatchResult = currentMatch.start();
         if (!startMatchResult.isSuccess()) {
             Component msg = startMatchResult.getDisplayMessage() == null
-                    ? Component.translatable(TranslateKeys.Match.MatchCoordinator.StartMatch.FAILURE_UNKNOWN_CAUSE)
-                    : Component.translatable(TranslateKeys.Match.MatchCoordinator.StartMatch.FAILURE_SPECIFIED_CAUSE)
+                    ? Component.translatable(TranslateKeys.Match.MATCH_COORDINATOR_START_MATCH_FAILURE_UNKNOWN_CAUSE)
+                    : Component.translatable(TranslateKeys.Match.MATCH_COORDINATOR_START_MATCH_FAILURE_SPECIFIED_CAUSE)
                       .arguments(startMatchResult.getDisplayMessage());
             return MatchCoordinator.StartResult.failure(msg);
         }
@@ -123,7 +123,7 @@ public class MatchCoordinator {
     public StopResult stopMatch() {
         if (this.getMatchState() != MatchState.IN_PROGRESS) {
             return StopResult.failure(
-                    Component.translatable(TranslateKeys.Match.MatchCoordinator.StopMatch.INVALID_MATCH_STATE)
+                    Component.translatable(TranslateKeys.Match.MATCH_COORDINATOR_STOP_MATCH_INVALID_MATCH_STATE)
             );
         }
 

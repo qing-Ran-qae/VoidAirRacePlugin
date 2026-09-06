@@ -1,8 +1,8 @@
 package io.github.hhn756.voidairrace.event;
 
+import io.github.hhn756.voidairrace.core.match.DataKey;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.core.match.componentbase.CustomData;
-import io.github.hhn756.voidairrace.core.match.componentbase.DataKey;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.Nullable;

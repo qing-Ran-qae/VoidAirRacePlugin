@@ -24,13 +24,13 @@ public class LoginMessage implements Listener {
 
         // 2. 给新加入的玩家自己发送专属消息
         player.sendMessage(
-                Component.translatable(TranslateKeys.AudioVisualServices.LoginMessage.LINE1_SELF)
+                Component.translatable(TranslateKeys.AudioVisualServices.LOGIN_MESSAGE_LINE1_SELF)
                         .arguments(Component.text(player.getName()))
         );
 
         // 3. 给其他所有玩家发送广播消息
         Component broadcastMsg = Component.translatable(
-                TranslateKeys.AudioVisualServices.LoginMessage.LINE1
+                TranslateKeys.AudioVisualServices.LOGIN_MESSAGE_LINE1
         ).arguments(Component.text(player.getName()));
 
         for (Player online : player.getServer().getOnlinePlayers()) {

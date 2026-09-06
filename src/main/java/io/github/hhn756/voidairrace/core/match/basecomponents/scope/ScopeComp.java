@@ -2,9 +2,9 @@ package io.github.hhn756.voidairrace.core.match.basecomponents.scope;
 
 import io.github.hhn756.voidairrace.VoidAirRace;
 import io.github.hhn756.voidairrace.core.match.ComponentPriority;
+import io.github.hhn756.voidairrace.core.match.DataKey;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.core.match.componentbase.CustomData;
-import io.github.hhn756.voidairrace.core.match.componentbase.DataKey;
 import io.github.hhn756.voidairrace.core.match.componentbase.EndableComp;
 import io.github.hhn756.voidairrace.core.match.componentbase.MatchComp;
 import org.jetbrains.annotations.Range;

@@ -18,27 +18,26 @@ import java.util.Objects;
 
 /**
  * 代表一个 Yaml 配置文件<br>
- * 继承自 Bukkit 的 {@link YamlConfiguration}，添加了键类型、事件支持等功能
+ * 继承自 Bukkit 的 {@link YamlConfiguration}，支持静态键类型、字段修改事件、绑定到文件、原子性保存
  */
 public class YamlConfig extends YamlConfiguration implements FileConfig {
-
     /**
      * 当前配置所属的配置文件枚举
      */
-    private final ConfigFile source;
+    private final ConfigDefinition definition;
 
     @Override
-    public @NonNull ConfigFile getSource() {
-        return source;
+    public @NonNull ConfigDefinition getDefine() {
+        return definition;
     }
 
     /**
      * 构造一个 YAML 配置对象
      *
-     * @param source 源配置文件
+     * @param definition 源配置文件
      */
-    public YamlConfig(@NonNull ConfigFile source) {
-        this.source = source;
+    public YamlConfig(@NonNull ConfigDefinition definition) {
+        this.definition = definition;
     }
 
     @Override
@@ -54,7 +53,7 @@ public class YamlConfig extends YamlConfiguration implements FileConfig {
     /**
      * 原子性地保存配置到指定文件
      *
-     * @param targetFile 目标文件
+     * @param targetFile       目标文件
      * @throws ConfigException 如果发生 I/O 错误或原子移动不支持且回退失败
      */
     @Override
@@ -82,7 +81,7 @@ public class YamlConfig extends YamlConfiguration implements FileConfig {
                     errMsg,
                     e,
                     Component.translatable(
-                            TranslateKeys.Config.SaveAtomic.CANT_SAVE
+                            TranslateKeys.Config.SAVE_ATOMIC_CANT_SAVE
                     )
             );
         }
@@ -109,7 +108,7 @@ public class YamlConfig extends YamlConfiguration implements FileConfig {
                     errMsg,
                     e,
                     Component.translatable(
-                            TranslateKeys.Config.SaveAtomic.CANT_SAVE
+                            TranslateKeys.Config.SAVE_ATOMIC_CANT_SAVE
                     )
             );
         }
@@ -127,7 +126,7 @@ public class YamlConfig extends YamlConfiguration implements FileConfig {
         super.set(path, newValue);
 
         if (!Objects.equals(oldValue, newValue)) {
-            new ConfigFieldChangeEvent(source, path, oldValue, newValue).callEvent();
+            new ConfigFieldChangeEvent(definition, path, oldValue, newValue).callEvent();
         }
     }
 
@@ -199,6 +198,6 @@ public class YamlConfig extends YamlConfiguration implements FileConfig {
     @Override
     public @Nullable YamlSection getConfigurationSection(@NonNull String path) {
         ConfigurationSection section = super.getConfigurationSection(path);
-        return section == null ? null : new YamlSection(section, source);
+        return section == null ? null : new YamlSection(section, definition);
     }
 }

@@ -41,7 +41,7 @@ public class DebugCommand implements Listener {
     public void onPluginEnable(PluginEnableEvent event) {
         event.getMainClass().getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commandsEvent -> {
             LiteralCommandNode<CommandSourceStack> node = Commands.literal("vardebug")
-                    .requires(ctx -> ctx.getSender().hasPermission(PermissionNode.DEBUG_COMMAND.getValue()))
+                    .requires(ctx -> ctx.getSender().hasPermission(PermissionNode.DEBUG_COMMAND.toString()))
                     .then(Commands.literal("info")
                             .then(Commands.literal("player")
                                     .executes(ctx -> {
@@ -124,7 +124,7 @@ public class DebugCommand implements Listener {
 
 //                                                Entity tempEntity = chest.getLocation().getWorld().spawnEntity(chest.getLocation(), EntityType.MARKER);
 //                                                ItemStack[] items = Bukkit.getLootTable(
-//                                                        new NamespacedKey(Namespace.namespace, "supply/battle/level_b")
+//                                                        new NamespacedKey(Plugin.namespace, "supply/battle/level_b")
 //                                                ).populateLoot(
 //                                                        new Random(),
 //                                                        new LootContext.Builder(chest.getLocation())

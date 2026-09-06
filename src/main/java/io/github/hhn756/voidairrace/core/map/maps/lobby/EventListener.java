@@ -1,7 +1,7 @@
 package io.github.hhn756.voidairrace.core.map.maps.lobby;
 
 import io.github.hhn756.voidairrace.constants.Categories;
-import io.github.hhn756.voidairrace.core.map.MapMeta;
+import io.github.hhn756.voidairrace.core.map.MapEntry;
 import io.github.hhn756.voidairrace.core.playerstatemanager.PlayerStateManager;
 import io.github.hhn756.voidairrace.core.playerstatemanager.systems.StateSystem;
 import io.github.hhn756.voidairrace.core.playerstatemanager.systems.play.PlayState;
@@ -98,9 +98,9 @@ public class EventListener implements Listener {
 
             // 更新 激活的 队伍选择区域 数量
             try {
-                MapMeta mapMeta = registry.get(Categories.MAP, newMapId);
-                if (mapMeta != null && mapMeta.maxTeams() != null) {
-                    State.activeTeamArea = mapMeta.maxTeams(); // 不会是null
+                MapEntry mapEntry = registry.category(Categories.MAP).get(newMapId);
+                if (mapEntry != null && mapEntry.maxTeams() != null) {
+                    State.activeTeamArea = mapEntry.maxTeams(); // 不会是null
                 }
             } catch (IllegalArgumentException e) {
                 State.activeTeamArea = 0;
@@ -139,9 +139,9 @@ public class EventListener implements Listener {
                         .getYmlConfig(PublicFiles.GAME_SETTINGS)
                         .get(GameSettingKeys.SELECTED_MAP_ID)
         );
-        MapMeta mapMeta = Registry.getInstance().get(Categories.MAP, selectedMapId);
-        if (mapMeta != null && mapMeta.maxTeams() != null) {
-            State.activeTeamArea = mapMeta.maxTeams();  // 不会是null
+        MapEntry mapEntry = Registry.getInstance().category(Categories.MAP).get(selectedMapId);
+        if (mapEntry != null && mapEntry.maxTeams() != null) {
+            State.activeTeamArea = mapEntry.maxTeams();  // 不会是null
         } else {
             State.activeTeamArea = 0;
         }

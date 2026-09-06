@@ -49,12 +49,12 @@ public class MapInitializer {
      */
     public void initAllMapsAsync() {
         // 获取要初始化的地图
-        Collection<MapMeta> maps = Registry.getInstance().list(Categories.MAP);
+        Collection<MapEntry> maps = Registry.getInstance().category(Categories.MAP).list();
 
         // 初始化任务
         CompletableFuture<Void> chain = CompletableFuture.completedFuture(null);
 
-        for (MapMeta meta : maps) {
+        for (MapEntry meta : maps) {
             NamespacedKey mapId = meta.getElementMeta().id();
             if (isInited(mapId)) continue;
 
@@ -75,7 +75,7 @@ public class MapInitializer {
      * @throws IllegalArgumentException 当指定地图不存在时抛出
      */
     public CompletableFuture<Void> reinitMap(NamespacedKey mapId) throws IllegalArgumentException {
-        GameMap mapInst = Registry.getInstance().get(Categories.MAP, mapId).newInstance();
+        GameMap mapInst = Registry.getInstance().category(Categories.MAP).get(mapId).newInstance();
 
         // 如果地图之前已初始化，先执行同步清理
         if (isInited(mapId)) {
@@ -97,7 +97,7 @@ public class MapInitializer {
      * @return 表示初始化完成的 future
      */
     private CompletableFuture<Void> initOneMap(@NonNull NamespacedKey mapId) {
-        GameMap mapInst = Registry.getInstance().get(Categories.MAP, mapId).newInstance();
+        GameMap mapInst = Registry.getInstance().category(Categories.MAP).get(mapId).newInstance();
         try {
             return mapInst.initAsync(mainClass)
                     .thenRunAsync(() -> {

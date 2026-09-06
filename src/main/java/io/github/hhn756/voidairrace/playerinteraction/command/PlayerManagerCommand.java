@@ -26,7 +26,7 @@ public class PlayerManagerCommand implements BootstrapModule {
     public void onBootstrap(@NonNull BootstrapContext context) {
         context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commandsEvent -> {
             LiteralCommandNode<CommandSourceStack> node = Commands.literal("player_manager")
-                    .requires(ctx -> ctx.getSender().hasPermission(PermissionNode.PLAYER_MANAGER_COMMAND.getValue()))
+                    .requires(ctx -> ctx.getSender().hasPermission(PermissionNode.PLAYER_MANAGER_COMMAND.toString()))
                     .then(Commands.literal("init")
                             .then(Commands.literal("get")
                                     .then(Commands.argument("player", StringArgumentType.string())
@@ -34,15 +34,15 @@ public class PlayerManagerCommand implements BootstrapModule {
                                                 CommandSender sender = ctx.getSource().getSender();
                                                 Player targetPlayer = Bukkit.getPlayer(ctx.getArgument("player", String.class));
                                                 if (targetPlayer == null) {
-                                                    sender.sendMessage(Component.translatable(TranslateKeys.Command.PlayerManagerCmd.Init.Get.NULL_PLAYER)
+                                                    sender.sendMessage(Component.translatable(TranslateKeys.Command.PLAYER_MANAGER_INIT_GET_NULL_PLAYER)
                                                             .arguments(Component.text(ctx.getArgument("player", String.class)))
                                                             .color(NamedTextColor.RED)
                                                     );
                                                     return 1;
                                                 }
                                                 String key = PlayerInitializer.getInstance().isInitialized(targetPlayer)
-                                                        ? TranslateKeys.Command.PlayerManagerCmd.Init.Get.YES
-                                                        : TranslateKeys.Command.PlayerManagerCmd.Init.Get.NO;
+                                                        ? TranslateKeys.Command.PLAYER_MANAGER_INIT_GET_YES
+                                                        : TranslateKeys.Command.PLAYER_MANAGER_INIT_GET_NO;
                                                 sender.sendMessage(Component.translatable(key)
                                                         .arguments(Component.text(targetPlayer.getName())));
                                                 return 1;
@@ -54,14 +54,14 @@ public class PlayerManagerCommand implements BootstrapModule {
                                                 CommandSender sender = ctx.getSource().getSender();
                                                 Player targetPlayer = Bukkit.getPlayer(ctx.getArgument("player", String.class));
                                                 if (targetPlayer == null) {
-                                                    sender.sendMessage(Component.translatable(TranslateKeys.Command.PlayerManagerCmd.Init.Reinit.NULL_PLAYER)
+                                                    sender.sendMessage(Component.translatable(TranslateKeys.Command.PLAYER_MANAGER_INIT_REINIT_NULL_PLAYER)
                                                             .arguments(Component.text(ctx.getArgument("player", String.class)))
                                                             .color(NamedTextColor.RED)
                                                     );
                                                     return 1;
                                                 }
                                                 PlayerInitializer.getInstance().reInitPlayer(targetPlayer);
-                                                sender.sendMessage(Component.translatable(TranslateKeys.Command.PlayerManagerCmd.Init.Reinit.OK)
+                                                sender.sendMessage(Component.translatable(TranslateKeys.Command.PLAYER_MANAGER_INIT_REINIT_OK)
                                                         .arguments(Component.text(targetPlayer.getName()))
                                                 );
                                                 return 1;

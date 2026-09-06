@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("io.papermc.paperweight.userdev") version "2.0.0-beta.19"
+    id("com.gradleup.shadow") version "9.6.1"
 }
 
 group = "io.github.hhn756"
@@ -14,8 +15,15 @@ repositories {
 }
 
 dependencies {
+    // paper（paper服务端）
     paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
     implementation("net.kyori:adventure-api:4.26.1")
+
+    // rembulan（lua库）
+    implementation(files("libs/rembulan/rembulan-compiler-0.4.2.jar"))
+    implementation(files("libs/rembulan/rembulan-runtime-0.4.2.jar"))
+    implementation(files("libs/rembulan/rembulan-stdlib-0.4.2.jar"))
+
 }
 
 configurations.all {
@@ -26,6 +34,109 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 }
 
+/*
+ * 从资源包（mc原版概念）语言文件生成翻译键常量类 TranslateKeys。
+ * 直接覆盖 src/main/java/.../constants/TranslateKeys.java，运行本任务前请先提交或备份手动版本。
+ * 语言文件路径取自环境变量 VAR_LANG_FILE，结构为 { "翻译键": "可读文本" }。
+ * 生成格式：TranslateKeys.<模块名>.<键名> = "语言文件中的键名原文"。
+ * 键名 = 匹配到的前缀之后的所有字符转大写（. 以 _ 替代以符合 Java 标识符）；语言文件中的键须为全小写。
+ * 前缀表（前缀 → 模块名）新增键段时需在此登记，否则对应键报错。
+ * 空键名与键名为 "_" 的条目视为占位/分隔用途，直接跳过不生成常量。
+ */
+tasks.register("generateTranslateKeys") {
+    group = "generation"
+    description = "读取 VAR_LANG_FILE 指向的语言文件，生成 constants/TranslateKeys.java"
+
+    doLast {
+        val ns = "void_air_race" // 与 constants.Plugin.ns 保持一致
+
+        val prefixToModule = mapOf(
+            "$ns.match." to "Match",
+            "$ns.match_comp." to "MatchComp",
+            "$ns.match_rule." to "MatchRule",
+            "$ns.rule." to "Rule",
+            "$ns.map." to "Map",
+            "$ns.arena." to "Arena",
+            "$ns.command." to "Command",
+            "$ns.team." to "Team",
+            "$ns.addons." to "Addons",
+            "$ns.config." to "Config",
+            "$ns.audio_visual_services." to "AudioVisualServices",
+            "$ns.base_components." to "BaseComponents",
+            "$ns.component_registry." to "ComponentRegistry",
+        )
+
+        // 优先项目属性（-PVAR_LANG_FILE=… / -PlangFile=…），其次进程环境变量。
+        // 后两者受进程环境快照影响：修改变量后需新开终端并 gradlew --stop，属性方式则不受影响
+        val langPath = (project.findProperty("VAR_LANG_FILE") as String?)
+            ?: (project.findProperty("langFile") as String?)
+            ?: System.getenv("VAR_LANG_FILE")
+            ?: throw GradleException("环境变量 VAR_LANG_FILE 未设置，无法定位语言文件（也可用 -PVAR_LANG_FILE=<路径> 传入）")
+        val langFile = File(langPath)
+        if (!langFile.isFile)
+            throw GradleException("语言文件不存在：$langPath（请检查 VAR_LANG_FILE）")
+
+        val parsed = groovy.json.JsonSlurper().parseText(langFile.readText(Charsets.UTF_8))
+        if (parsed !is Map<*, *>)
+            throw GradleException("语言文件顶层必须是 { \"翻译键\": \"可读文本\" } 对象")
+
+        // 逐键匹配前缀（取最长匹配，避免 "match." 抢占 "match_comp."）
+        val constants = parsed.entries.mapNotNull { entry ->
+            val key = entry.key as? String
+                ?: throw GradleException("键必须是字符串：${entry.key}")
+            // 空键与 "_" 键视为占位条目，不生成常量
+            if (key.isEmpty() || key == "_") return@mapNotNull null
+            val hit = prefixToModule.entries
+                .sortedByDescending { it.key.length }
+                .firstOrNull { key.startsWith(it.key) }
+                ?: throw GradleException("键无匹配前缀，请先在前缀表中登记：$key")
+            if (key != key.lowercase())
+                throw GradleException("语言文件中的键应为全小写：$key")
+            val remainder = key.substring(hit.key.length)
+            // 键名为空或为 "_" 同样跳过
+            if (remainder.isEmpty() || remainder == "_") return@mapNotNull null
+            val fieldName = remainder.uppercase().replace('.', '_')
+            if (!Regex("^[A-Z][A-Z0-9_]*$").matches(fieldName))
+                throw GradleException("由键名派生的字段名不是合法 Java 标识符：$key → $fieldName")
+            Triple(hit.value, fieldName, key)
+        }
+
+        // 按模块分组，组内按字段名排序，模块间按名称排序，保证输出确定
+        val byModule = constants.groupBy({ it.first }, { it.second to it.third })
+        byModule.forEach { (module, fields) ->
+            val dup = fields.map { it.first }.groupingBy { it }.eachCount().filterValues { it > 1 }
+            if (dup.isNotEmpty())
+                throw GradleException("模块 $module 存在派生字段名冲突：${dup.keys}")
+        }
+
+        val sb = StringBuilder()
+        sb.appendLine("// 此文件由 Gradle 任务 generateTranslateKeys 生成，请勿手动编辑。")
+        sb.appendLine("// 真相源：环境变量 VAR_LANG_FILE 指向的语言文件。")
+        sb.appendLine("package io.github.hhn756.voidairrace.constants;")
+        sb.appendLine()
+        sb.appendLine("/**")
+        sb.appendLine(" * 插件中的所有文本组件翻译键（生成产物）")
+        sb.appendLine(" * */")
+        sb.appendLine("public class TranslateKeys {")
+        sb.appendLine("    private TranslateKeys() {}")
+        for (module in byModule.keys.sorted()) {
+            sb.appendLine()
+            sb.appendLine("    public static class $module {")
+            sb.appendLine("        private $module() {}")
+            for ((fieldName, key) in byModule.getValue(module).sortedBy { it.first }) {
+                sb.appendLine("        public static final String $fieldName = \"$key\";")
+            }
+            sb.appendLine("    }")
+        }
+        sb.appendLine("}")
+
+        val outFile = file("src/main/java/io/github/hhn756/voidairrace/constants/TranslateKeys.java")
+        outFile.parentFile.mkdirs()
+        outFile.writeText(sb.toString(), Charsets.UTF_8)
+        logger.lifecycle("已生成 ${byModule.values.sumOf { it.size }} 个翻译键常量 → $outFile")
+    }
+}
+
 tasks.withType<JavaCompile> {
     options.encoding = "utf-8"
 }
@@ -33,7 +144,7 @@ tasks.withType<JavaCompile> {
 val deployDir = System.getenv("DEPLOY_DIR")?.replace("\\", "/") ?: "build/deploy"
 val isCI = System.getenv("CI")?.toBoolean() ?: false
 
-// ai写的，用于移动构建结果jar到服务端插件目录
+// 移动构建结果jar到服务端插件目录
 tasks.reobfJar {
     val fileName = if (isCI) {
         "${project.name}-${project.version}-${System.getenv("GIT_COMMIT")?.substring(0, 7) ?: "SNAPSHOT"}.jar"
@@ -41,7 +152,7 @@ tasks.reobfJar {
         "${project.name}.jar"
     }
 
-    // 添加调试信息
+    // 调试信息
     doFirst {
         println("========================================")
         println("DEPLOY_DIR 环境变量: ${System.getenv("DEPLOY_DIR")}")

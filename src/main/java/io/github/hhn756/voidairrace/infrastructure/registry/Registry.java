@@ -1,23 +1,38 @@
 package io.github.hhn756.voidairrace.infrastructure.registry;
 
-import io.github.hhn756.voidairrace.exception.RegistryException;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 /**
- * 能够记录和分类项目，支持键值唯一约束和键索引查询
+ * 注册表，记录并维护所有类别的子表<br>
+ * 注意，<strong>非线程安全</strong>：此类设计时不考虑多线程环境
+ * <p>
+ * 概念：
+ * <p>
+ * - 类别：区分不同种类注册项的维度，例如道具和地图<br>
+ * - 子表：实际记录注册项的部分<br>
+ * - 注册项：被记录在子表中的项，包含具体字段
+ * <p>
+ * 用法：
+ * <p>
+ * 1. 通过{@link #getInstance()}取得单例<br>
+ * 2. 通过{@link #createCategory(CategoryId, Function)}（默认子表）
+ * 或{@link #createCategory(CategoryId, DefaultSubtable.Factory)}（自定义子表）定义类别<br>
+ * 3. 调用{@link #category(CategoryId)}传入{@link CategoryId}常量获取目标类别的子表，
+ * 再调用子表的{@link DefaultSubtable#add}、{@link DefaultSubtable#get}等方法完成注册项的记录与查询
+ * <p>
+ * 所有类别必须先定义后使用。键的计算属于子表的内部行为：
+ * 默认子表在定义时接收键计算函数，从注册项派生键；自定义子表自行决定键的来源。
+ * 注册项类型不受约束，简单值（如{@code String}）无需包装类型即可注册
  */
 public class Registry {
     private static Registry instance;
 
-    // 类别 → 项目映射表（键 → 项目对象）
-    private final ConcurrentHashMap<EntryCategory<?, ?>, ConcurrentHashMap<Object, Object>> categoryMaps
-            = new ConcurrentHashMap<>();
+    // 类别标识 → 子表实例
+    private final Map<CategoryId<?, ?, ?>, DefaultSubtable<?, ?>> subtables = new HashMap<>();
 
     static void load() {
         instance = new Registry();
@@ -37,89 +52,65 @@ public class Registry {
         return instance;
     }
 
+    // --------------------------------
+
     private Registry() {}
 
     /**
-     * 定义一个项目类别<br>
-     * 注册后此类别将拥有独立于其他类别的子表，用于记录该类的所有已注册项目<br>
-     * 若类别已存在，则无操作
+     * 定义一个使用默认实现的类别，并指定键计算函数<br>
+     * 定义后，该类别独立记录自己名下的注册项，与其他类别互不影响；
+     * 注册项的键由子表内部用{@code keyFn}从注册项派生
+     * <p>
+     * 若类别已定义过，则无操作
      *
-     * @param category 要定义的类别
+     * @param id    要定义的类别标识，其子表类型参数写默认实现{@link DefaultSubtable}
+     * @param keyFn 键计算函数，将注册项映射为其键
      */
-    public <I extends Entry<K>, K> void createCategory(@NonNull EntryCategory<I, K> category) {
-        categoryMaps.computeIfAbsent(category, k -> new ConcurrentHashMap<>());
+    public <I, K> void createCategory(
+            @NonNull CategoryId<I, K, DefaultSubtable<I, K>> id,
+            @NonNull Function<I, K> keyFn
+    ) {
+        subtables.computeIfAbsent(id, k -> new DefaultSubtable<>(id, keyFn));
     }
 
     /**
-     * 增加一项到指定类别中<br>
-     * 根据类别的键提取器提取键，若键已存在，则不做任何操作（即不覆盖）
+     * 定义一个使用<strong>自定义子表实现</strong>的类别<br>
+     * 适用于需要超出基本记录与查询能力的类别（如双射映射）
+     * <p>
+     * 若类别已定义过，则无操作（已存在的子表不会被工厂创建的新实例替换）
      *
-     * @param category 目标类别
-     * @param entry    要添加的项目，应和类别定义对象中的键类型一致
+     * @param id      要定义的类别标识，其子表类型参数为自定义实现
+     * @param factory 创建类别子表实例的工厂，需使用传入的id构造实例
      */
-    public <I extends Entry<K>, K> void add(@NonNull EntryCategory<I, K> category, I entry) {
-        K key = entry.getKey();
-        if (key == null) throw new RegistryException("项目的主键为 null", null);
-
-        ConcurrentHashMap<Object, Object> map =
-                categoryMaps.computeIfAbsent(category, k -> new ConcurrentHashMap<>());
-        // putIfAbsent 保证键唯一且不覆盖已有值
-        map.putIfAbsent(key, entry);
+    public <I, K, C extends DefaultSubtable<I, K>> void createCategory(
+            @NonNull CategoryId<I, K, C> id,
+            DefaultSubtable.@NonNull Factory<I, K, C> factory
+    ) {
+        subtables.computeIfAbsent(id, k -> factory.create(id));
     }
 
     /**
-     * 根据键删除指定类别中的项目<br>
-     * 项目本就不在类别中时方法不产生效果
+     * 获取指定类别的子表，用于对该类别的注册项进行记录和查询
+     * <p>
+     * 返回实例的类型由{@code id}的子表类型参数在编译期确定
+     * <p>
+     * 本方法不自动定义类别（注册表无法凭空获知键的计算方式），
+     * 类别必须先通过{@link #createCategory(CategoryId, Function)}或
+     * {@link #createCategory(CategoryId, DefaultSubtable.Factory)}定义
      *
-     * @param category 指定类别
-     * @param key      要删除项目的键，应和类别定义对象中的键类型一致
-     */
-    public <I extends Entry<K>, K> void remove(@NonNull EntryCategory<I, K> category, K key) {
-        ConcurrentHashMap<Object, Object> map = categoryMaps.get(category);
-        if (map != null) {
-            map.remove(key);
-        }
-    }
-
-    /**
-     * 根据键获取指定类别中的项目
+     * @param id 指定类别标识
      *
-     * @param category 指定类别
-     * @param key      查询键，应和类别定义对象中的键类型一致
+     * @return 类别子表实例，类型为id声明的子表类型
      *
-     * @return 项目对象，若未注册则返回{@code null}
+     * @throws IllegalStateException 如果类别尚未定义
      */
     @SuppressWarnings("unchecked")
-    public <I extends Entry<K>, K> @Nullable I get(@NonNull EntryCategory<I, K> category, K key) {
-        ConcurrentHashMap<Object, Object> map = categoryMaps.get(category);
-        if (map == null) return null;
-        return (I) map.get(key);
-    }
-
-    /**
-     * 检查指定项目在指定类别中是否已注册
-     *
-     * @param category 指定类别
-     * @param key      查询键，应和类别定义对象中的键类型一致
-     *
-     * @return 如果项目在指定类别已注册将返回{@code true}，否则返回{@code false}
-     */
-    public <I extends Entry<K>, K> boolean isRegistered(@NonNull EntryCategory<I, K> category, K key) {
-        return categoryMaps.get(category).containsKey(key);
-    }
-
-    /**
-     * 列出指定类别中的所有项目
-     *
-     * @param category 类别
-     *
-     * @return 该类别下所有项目的集合（副本），若类别未定义则返回空集合
-     */
-    @SuppressWarnings("unchecked")
-    public <I extends Entry<K>, K> @NonNull Collection<@NonNull I> list(@NonNull EntryCategory<I, K> category) {
-        ConcurrentHashMap<Object, Object> map = categoryMaps.get(category);
-        if (map == null) return Collections.emptySet();
-        // 返回副本以避免外部修改内部结构
-        return (Collection<I>) (Collection<?>) new HashSet<>(map.values());
+    public <I, K, C extends DefaultSubtable<I, K>> @NonNull C category(
+            @NonNull CategoryId<I, K, C> id
+    ) {
+        DefaultSubtable<?, ?> subtable = subtables.get(id);
+        if (subtable == null)
+            throw new IllegalStateException("注册表类别未定义，请先调用createCategory定义该类别");
+        return (C) subtable;
     }
 }

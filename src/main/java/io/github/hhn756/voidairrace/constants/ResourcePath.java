@@ -12,7 +12,11 @@ public enum ResourcePath {
         this.path = path;
     }
 
-    public String getPath() {
+    /**
+     * 获取字符串形式的资源路径
+     * */
+    @Override
+    public String toString() {
         return path;
     }
 }

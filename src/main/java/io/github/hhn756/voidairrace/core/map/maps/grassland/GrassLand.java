@@ -1,20 +1,20 @@
 package io.github.hhn756.voidairrace.core.map.maps.grassland;
 
-import io.github.hhn756.voidairrace.constants.Namespace;
+import io.github.hhn756.voidairrace.constants.Categories;
+import io.github.hhn756.voidairrace.constants.Plugin;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
-import io.github.hhn756.voidairrace.core.custom.GameElementMeta;
+import io.github.hhn756.voidairrace.core.addons.GameElementMeta;
 import io.github.hhn756.voidairrace.core.map.PlayableGameMap;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.core.match.basecomponents.contestant.ContestantComp;
 import io.github.hhn756.voidairrace.core.match.basecomponents.scope.AreaTags;
 import io.github.hhn756.voidairrace.core.match.basecomponents.scope.MatchArea;
 import io.github.hhn756.voidairrace.core.match.basecomponents.scope.ScopeComp;
-import io.github.hhn756.voidairrace.core.matchrule.MatchRule;
 import io.github.hhn756.voidairrace.core.matchrule.RuleComp;
-import io.github.hhn756.voidairrace.core.matchrule.RuleRegistry;
 import io.github.hhn756.voidairrace.core.team.TeamRoster;
 import io.github.hhn756.voidairrace.exception.ArenaException;
 import io.github.hhn756.voidairrace.infrastructure.config.Config;
+import io.github.hhn756.voidairrace.infrastructure.registry.Registry;
 import io.github.hhn756.voidairrace.infrastructure.util.schedulingutil.SchedulingUtil;
 import io.github.hhn756.voidairrace.infrastructure.util.world.BlockRegion;
 import io.github.hhn756.voidairrace.infrastructure.util.world.blockfinder.BlockFinder;
@@ -47,15 +47,15 @@ public class GrassLand extends PlayableGameMap implements Listener {
     private static final GameElementMeta meta = new GameElementMeta(
             Const.MAP_ID,
             List.of(
-                    Component.translatable(TranslateKeys.Map.GrassLand.NAME)
+                    Component.translatable(TranslateKeys.Map.GRASS_LAND_NAME)
             ),
             List.of(
-                    Component.translatable(TranslateKeys.Map.GrassLand.DESCRIPTION_LINE1)
+                    Component.translatable(TranslateKeys.Map.GRASS_LAND_DESCRIPTION_LINE1)
             ),
             List.of(
-                    Component.translatable(TranslateKeys.Map.GrassLand.AUTHOR1)
+                    Component.translatable(TranslateKeys.Map.GRASS_LAND_AUTHOR1)
             ),
-            Component.translatable(TranslateKeys.Map.GrassLand.DISPLAY_VERSION),
+            Component.translatable(TranslateKeys.Map.GRASS_LAND_DISPLAY_VERSION),
             1L,
             null
     );
@@ -81,8 +81,8 @@ public class GrassLand extends PlayableGameMap implements Listener {
         ArenaToken arena = borrowResult.getValue();
         if (!borrowResult.isSuccess() || arena == null) return StartResult.failure(
                 borrowResult.getDisplayMessage() == null
-                        ? Component.translatable(TranslateKeys.Map.GrassLand.SelectedStart.FAILURE_UNKNOWN_CAUSE)
-                        : Component.translatable(TranslateKeys.Map.GrassLand.SelectedStart.FAILURE_SPECIFIED_CAUSE)
+                        ? Component.translatable(TranslateKeys.Map.GRASS_LAND_SELECTED_START_FAILURE_UNKNOWN_CAUSE)
+                        : Component.translatable(TranslateKeys.Map.GRASS_LAND_SELECTED_START_FAILURE_SPECIFIED_CAUSE)
                           .arguments(borrowResult.getDisplayMessage())
         );
 
@@ -125,7 +125,7 @@ public class GrassLand extends PlayableGameMap implements Listener {
 
         // 要刷新的物品
         LootTable supplyLoot = Bukkit.getLootTable(
-                new NamespacedKey(Namespace.str, "maps/void_air_race/grass_land/supply")
+                new NamespacedKey(Plugin.ns, "maps/void_air_race/grass_land/supply")
         );
 
         for (Location loc : supplies) {
@@ -146,17 +146,15 @@ public class GrassLand extends PlayableGameMap implements Listener {
      */
     private void enableRules(Match match) {
         RuleComp ruleComp = match.getComp(RuleComp.class);
-        RuleRegistry ruleRegistry = RuleRegistry.getInstance();
+        var ruleSubtable = Registry.getInstance().category(Categories.RULE);
 
-        for (Class<? extends MatchRule> rule : Const.USE_RULES) {
-            RuleComp.ManagerEnableRuleResult enableRuleResult = ruleComp.enableRule(
-                    ruleRegistry.ruleClassToId(rule)
-            );
+        for (NamespacedKey ruleId : Const.USE_RULES) {
+            RuleComp.ManagerEnableRuleResult enableRuleResult = ruleComp.enableRule(ruleId);
             Component displayMessage = enableRuleResult.getDisplayMessage();
             if (!enableRuleResult.isSuccess()) {
                 Component message = (displayMessage == null
-                        ? Component.translatable(TranslateKeys.Map.GrassLand.SelectedStart.FAILURE_UNKNOWN_CAUSE)
-                        : Component.translatable(TranslateKeys.Map.GrassLand.SelectedStart.FAILURE_SPECIFIED_CAUSE)
+                        ? Component.translatable(TranslateKeys.Map.GRASS_LAND_SELECTED_START_FAILURE_UNKNOWN_CAUSE)
+                        : Component.translatable(TranslateKeys.Map.GRASS_LAND_SELECTED_START_FAILURE_SPECIFIED_CAUSE)
                           .arguments(displayMessage));
                 Bukkit.getServer().broadcast(message.color(NamedTextColor.RED));
             }
@@ -199,7 +197,7 @@ public class GrassLand extends PlayableGameMap implements Listener {
             return CompletableFuture.failedFuture(
                     new ArenaException(
                             "加载竞技场失败：" + loadArenaResult.getDisplayMessage(),
-                            Component.translatable(TranslateKeys.Map.GrassLand.FindSupplyBoxes.LOAD_ARENA_FAILURE)
+                            Component.translatable(TranslateKeys.Map.GRASS_LAND_FIND_SUPPLY_BOXES_LOAD_ARENA_FAILURE)
                     )
             );
         }

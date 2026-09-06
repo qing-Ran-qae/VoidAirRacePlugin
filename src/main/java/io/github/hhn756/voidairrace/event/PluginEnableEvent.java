@@ -6,9 +6,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NonNull;
 
 /**
- * 插件启用时触发一次<br>
- * 该事件由插件主类在插件启动流程末尾发布<br>
- * 监听此事件可以执行需要在插件完全加载后进行的初始化操作<br>
+ * 插件启用时触发一次
+ *
+ * 该事件由插件主类在插件启动流程末尾发布
+ *
+ * 监听此事件可以执行需要在插件完全加载后进行的初始化操作
+ *
  * 此事件为各模块提供了统一的启动入口，避免在 {@link JavaPlugin#onEnable()} 中直接耦合大量初始化代码
  */
 public class PluginEnableEvent extends Event {

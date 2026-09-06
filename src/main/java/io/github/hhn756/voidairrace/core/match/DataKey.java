@@ -1,4 +1,7 @@
-package io.github.hhn756.voidairrace.core.match.componentbase;
+package io.github.hhn756.voidairrace.core.match;
+
+import io.github.hhn756.voidairrace.core.match.componentbase.CustomData;
+import io.github.hhn756.voidairrace.core.match.componentbase.MatchComp;
 
 import java.util.Objects;
 
@@ -37,7 +40,7 @@ public final class DataKey<T extends CustomData> {
     }
 
     /**
-     * @return 此键所代表的类型
+     * @return 此键所索引到数据的类型
      * */
     public Class<T> getDataType() {
         return customDataType;

@@ -29,18 +29,18 @@ public class MatchMessage implements Listener {
 
         // 比赛 开始 时显示提示消息和音效
         server.broadcast(
-                Component.translatable(TranslateKeys.AudioVisualServices.MatchMessage.MatchStarted.LINE1)
+                Component.translatable(TranslateKeys.AudioVisualServices.MATCH_MESSAGE_MATCH_STARTED_LINE1)
         );
         server.broadcast(
-                Component.translatable(TranslateKeys.AudioVisualServices.MatchMessage.MatchStarted.LINE2)
+                Component.translatable(TranslateKeys.AudioVisualServices.MATCH_MESSAGE_MATCH_STARTED_LINE2)
                         .arguments(match.getConfigData(MapComp.CONFIG_KEY).map().getElementMeta().mainName())
         );
         server.broadcast(
-                Component.translatable(TranslateKeys.AudioVisualServices.MatchMessage.MatchStarted.LINE3)
+                Component.translatable(TranslateKeys.AudioVisualServices.MATCH_MESSAGE_MATCH_STARTED_LINE3)
                         .arguments(Component.text(match.getConfigData(GameTimeComp.CONFIG_KEY).duration() / 20d))
         );
         server.broadcast(
-                Component.translatable(TranslateKeys.AudioVisualServices.MatchMessage.MatchStarted.LINE4)
+                Component.translatable(TranslateKeys.AudioVisualServices.MATCH_MESSAGE_MATCH_STARTED_LINE4)
         );
 
         Sound sound = Sound.sound(
@@ -59,7 +59,7 @@ public class MatchMessage implements Listener {
 
         // 比赛 结束 时显示提示消息和音效
         server.broadcast(
-                Component.translatable(TranslateKeys.AudioVisualServices.MatchMessage.MatchOver.LINE1)
+                Component.translatable(TranslateKeys.AudioVisualServices.MATCH_MESSAGE_MATCH_OVER_LINE1)
         );
 
         Sound sound = Sound.sound(

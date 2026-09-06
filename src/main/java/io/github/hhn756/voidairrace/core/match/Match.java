@@ -6,7 +6,7 @@ import io.github.hhn756.voidairrace.core.match.componentbase.*;
 import io.github.hhn756.voidairrace.event.MatchOverEvent;
 import io.github.hhn756.voidairrace.event.MatchStartedEvent;
 import io.github.hhn756.voidairrace.infrastructure.config.Config;
-import io.github.hhn756.voidairrace.infrastructure.config.ConfigFile;
+import io.github.hhn756.voidairrace.infrastructure.config.ConfigDefinition;
 import io.github.hhn756.voidairrace.infrastructure.config.ConfigKey;
 import io.github.hhn756.voidairrace.infrastructure.config.YamlConfig;
 import io.github.hhn756.voidairrace.infrastructure.config.files.PublicFiles;
@@ -39,7 +39,7 @@ public class Match {
     private final MatchConfig config;
 
     /** 比赛记录 */
-    private static final ConfigFile recordFile = new ConfigFile(
+    private static final ConfigDefinition recordFile = new ConfigDefinition(
             PublicFiles.TEMP_DIR + "match_record",
             new ConfigKey<?>[0]
     );
@@ -62,7 +62,7 @@ public class Match {
     public static CreateMatchResult create(@NonNull MatchConfig config) {
         // 防止重复使用配置实例
         if (config.isUsed()) return CreateMatchResult.failure(
-                Component.translatable(TranslateKeys.Match.Create.CONFIG_IS_USED)
+                Component.translatable(TranslateKeys.Match.CREATE_CONFIG_IS_USED)
         );
         config.use();
 
@@ -78,16 +78,12 @@ public class Match {
      *             此方法会将每个参数对象传递给其{@link CustomData#getSource()}返回类型的组件
      * */
     public @NonNull StartResult start(@Nullable CustomData... args) {
-        if (state != MatchState.SCHEDULED) {
-            return StartResult.failure(Component.translatable(
-                    TranslateKeys.Match.Start.INVALID_STATE
-            ));
-        }
-        if (used) {
-            return StartResult.failure(Component.translatable(
-                    TranslateKeys.Match.Start.INSTANCE_IS_USED
-            ));
-        }
+        // 如果比赛已开始
+        if (state != MatchState.SCHEDULED) return StartResult.failure(
+                Component.translatable(TranslateKeys.Match.START_INVALID_STATE));
+        // 如果比赛实例已使用过
+        if (used) return StartResult.failure(
+                Component.translatable(TranslateKeys.Match.START_INSTANCE_IS_USED));
 
         // 标记使用
         used = true;
@@ -152,7 +148,7 @@ public class Match {
                 // 安装失败后逆安装顺序卸载已安装的组件
                 rollback(installed, this);
                 return InstallComponentsResult.failure(
-                        Component.translatable(TranslateKeys.Match.Start.INSTALL_FAILED));
+                        Component.translatable(TranslateKeys.Match.START_INSTALL_FAILED));
             }
         }
 
@@ -250,12 +246,9 @@ public class Match {
      *             此方法会将每个参数对象传递给其 {@link CustomData#getSource()} 返回类型的组件
      */
     public @NonNull StopResult stop(@Nullable CustomData... args) {
-        // 比赛状态检查
-        if (state != MatchState.IN_PROGRESS) {
-            return StopResult.failure(Component.translatable(
-                    TranslateKeys.Match.Stop.INVALID_STATE
-            ));
-        }
+        // 如果未开始
+        if (state != MatchState.IN_PROGRESS) return StopResult.failure(
+                Component.translatable(TranslateKeys.Match.STOP_INVALID_STATE));
 
         // 结束上下文
         Map<DataKey<?>, CustomData> endContext = new HashMap<>();
@@ -364,7 +357,7 @@ public class Match {
     /**
      * 获取比赛配置中的数据
      * 
-     * @see MatchConfig#getData(DataKey) 
+     * @see MatchConfig#getData(DataKey)
      * */
     public @Nullable <K extends CustomData> K getConfigData(DataKey<K> key) {
         return config.getData(key);
@@ -386,13 +379,11 @@ public class Match {
      *
      * @return 指定模块的记录段
      * */
-    public ConfigurationSection getRecord(NamespacedKey module) {
+    public ConfigurationSection getRecord(@NonNull NamespacedKey module) {
         String key = module.getNamespace()
                 + "___"
                 + module.getKey();
-        if (!recordInst.contains(key)) {
-            return recordInst.createSection(key);
-        }
+        if (!recordInst.contains(key)) return recordInst.createSection(key);
         return recordInst.getConfigurationSection(key);
     }
 

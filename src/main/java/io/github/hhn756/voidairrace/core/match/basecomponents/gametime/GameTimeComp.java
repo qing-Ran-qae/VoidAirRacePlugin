@@ -3,6 +3,7 @@ package io.github.hhn756.voidairrace.core.match.basecomponents.gametime;
 import io.github.hhn756.voidairrace.VoidAirRace;
 import io.github.hhn756.voidairrace.constants.TranslateKeys;
 import io.github.hhn756.voidairrace.core.match.ComponentPriority;
+import io.github.hhn756.voidairrace.core.match.DataKey;
 import io.github.hhn756.voidairrace.core.match.Match;
 import io.github.hhn756.voidairrace.core.match.MatchConfig;
 import io.github.hhn756.voidairrace.core.match.componentbase.*;
@@ -71,7 +72,7 @@ public class GameTimeComp extends MatchComp
     public MatchConfig.@NonNull ValidationConfigResult validateConfig(@NonNull GameTimeConfig config) {
         if (config.duration() <= 0) {
             return MatchConfig.ValidationConfigResult.failure(
-                    Component.translatable(TranslateKeys.BaseComponents.GameTimeComp.INVALID_DURATION)
+                    Component.translatable(TranslateKeys.BaseComponents.GAME_TIME_COMP_INVALID_DURATION)
             );
         }
         return MatchConfig.ValidationConfigResult.success();
@@ -85,7 +86,7 @@ public class GameTimeComp extends MatchComp
         GameTimeConfig config = match.getConfig().getData(GameTimeComp.CONFIG_KEY);
         if (config == null) {
             return new InstallResult<>(
-                    false, Component.translatable(TranslateKeys.BaseComponents.GameTimeComp.NO_CONFIG),
+                    false, Component.translatable(TranslateKeys.BaseComponents.GAME_TIME_COMP_NO_CONFIG),
                     null
             );
         }
